@@ -64,4 +64,17 @@ $transition-duration: 0.25s;
     padding: 0.7em 1em;
     margin-left: 10px;
   }
+
+  .wonderpush-help {
+    background-image: url(./allow-notifications.jpg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 200px * 1.4;
+    height: 200px;
+    position: absolute;
+    bottom: $default-height + 10;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+  }
 }

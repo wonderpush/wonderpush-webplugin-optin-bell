@@ -16,6 +16,10 @@
     this.paragraph = document.createElement('div');
     this.paragraph.classList.add('wonderpush-paragraph');
     this.element.appendChild(this.paragraph);
+
+    this.help = document.createElement('div');
+    this.help.classList.add('wonderpush-help');
+    this.element.appendChild(this.help);
   }
 
   /**
