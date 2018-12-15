@@ -1,0 +1,43 @@
+
+$default-width: 44px;
+$default-height: 44px;
+$default-color: #E85E72;
+$default-bell-color: #fff;
+$compact-width: 33px;
+$compact-height: 33px;
+
+.wonderpush-bell {
+  z-index: 10000;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+
+  .wonderpush-icon-container {
+    transition: all 0.25s ease-in-out;
+    width: $default-width;
+    height: $default-height;
+    border-radius: $default-width / 2;
+    background: $default-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.wonderpush-discrete {
+      opacity: 0.5;
+      width: $compact-width;
+      height: $compact-height;
+      border-radius: $compact-width / 2;
+    }
+
+    .wonderpush-icon {
+      mask-image: url(./bell.svg);
+      -webkit-mask-image: url(./bell.svg);
+      background: $default-bell-color;
+      width: 60%;
+      height: 60%;
+    }
+  }
+}
