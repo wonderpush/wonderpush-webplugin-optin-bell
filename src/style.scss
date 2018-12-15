@@ -5,6 +5,7 @@ $default-color: #E85E72;
 $default-bell-color: #fff;
 $compact-width: 33px;
 $compact-height: 33px;
+$transition-duration: 0.25s;
 
 .wonderpush-bell {
   z-index: 10000;
@@ -13,24 +14,34 @@ $compact-height: 33px;
   left: 20px;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
+  height: $default-height;
+  transition: height $transition-duration ease-in;
+
+
+  &.wonderpush-discrete {
+    height: $compact-height;
+    .wonderpush-icon-container {
+      border-radius: $compact-width / 2;
+      width: $compact-width;
+      opacity: 0.5;
+    }
+
+    .wonderpush-paragraph {
+      padding: 0;
+      font-size: 0;
+    }
+  }
 
   .wonderpush-icon-container {
-    transition: all 0.25s ease-in-out;
+    transition: all $transition-duration ease-in;
     width: $default-width;
-    height: $default-height;
+    height: 100%;
     border-radius: $default-width / 2;
     background: $default-color;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &.wonderpush-discrete {
-      opacity: 0.5;
-      width: $compact-width;
-      height: $compact-height;
-      border-radius: $compact-width / 2;
-    }
 
     .wonderpush-icon {
       mask-image: url(./bell.svg);
@@ -39,5 +50,18 @@ $compact-height: 33px;
       width: 60%;
       height: 60%;
     }
+  }
+
+  .wonderpush-paragraph {
+    transition: all $transition-duration * 1.2 ease-out;
+    width: auto;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 13px;
+    font-family: arial, sans-serif;
+    border-radius: 4px;
+    padding: 0.7em 1em;
+    margin-left: 10px;
   }
 }

@@ -12,6 +12,10 @@
     this.icon = document.createElement('div');
     this.icon.classList.add('wonderpush-icon');
     this.iconContainer.appendChild(this.icon);
+
+    this.paragraph = document.createElement('div');
+    this.paragraph.classList.add('wonderpush-paragraph');
+    this.element.appendChild(this.paragraph);
   }
 
   /**
@@ -40,8 +44,9 @@
     this.style = options.style;
 
     WonderPushSDK.loadStylesheet('style.css');
+    var bell = new Bell();
+
     this.showBell = function () {
-      var bell = new Bell();
       var readyState = document.readyState;
       var attach = function() { document.body.appendChild(bell.element); };
       if (readyState === 'loading') {
@@ -52,6 +57,7 @@
     }.bind(this);
 
     this.showBell();
+    bell.paragraph.innerText = 'Subscribe to notifications';
   });
 
 })();
