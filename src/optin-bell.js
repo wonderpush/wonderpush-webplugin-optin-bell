@@ -1,25 +1,47 @@
 (function () {
   var document = window.document;
+  var _ = function(text) { return text; };
 
-  function Bell() {
+  /**
+   *
+   * @param {object?} options
+   * @param {string?} options.notificationIcon
+   * @param {string?} options.dialogTitle
+   * @constructor
+   */
+  function Bell(options) {
+    options = options || {};
     this.element = document.createElement('div');
     this.element.classList.add('wonderpush-bell');
 
-    this.iconContainer = document.createElement('div');
-    this.element.appendChild(this.iconContainer);
-    this.iconContainer.classList.add('wonderpush-icon-container');
+    var definitions = [
+      { cls: 'wonderpush-icon-container', name: 'iconContainer'},
+      { cls: 'wonderpush-icon', name: 'icon', parent: 'iconContainer'},
+      { cls: 'wonderpush-paragraph', name: 'paragraph'},
+      { cls: 'wonderpush-help', name: 'help'},
+      { cls: 'wonderpush-dialog', name: 'dialog'},
+      { cls: 'wonderpush-dialog-title', name: 'dialogTitle', parent: 'dialog'},
+      { cls: 'wonderpush-notification', name: 'notification', parent: 'dialog'},
+      { cls: 'wonderpush-notification-icon', name: 'notificationIcon', parent: 'notification'},
+      { cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
+      { cls: 'wonderpush-notification-paragraph-medium', parent: 'notification'},
+      { cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
+      { cls: 'wonderpush-notification-paragraph-small', parent: 'notification'},
+      { cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialog'},
+    ];
 
-    this.icon = document.createElement('div');
-    this.icon.classList.add('wonderpush-icon');
-    this.iconContainer.appendChild(this.icon);
+    // Create the DOM
+    definitions.forEach(function (definition) {
+      var elt = document.createElement('div');
+      if (definition.name) this[definition.name] = elt;
+      var parent = this[definition.parent || 'element'];
+      parent.appendChild(elt);
+      elt.classList.add(definition.cls);
+    }.bind(this));
 
-    this.paragraph = document.createElement('div');
-    this.paragraph.classList.add('wonderpush-paragraph');
-    this.element.appendChild(this.paragraph);
-
-    this.help = document.createElement('div');
-    this.help.classList.add('wonderpush-help');
-    this.element.appendChild(this.help);
+    // Configure a few things
+    if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
+    this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
   }
 
   /**
@@ -48,7 +70,9 @@
     this.style = options.style;
 
     WonderPushSDK.loadStylesheet('style.css');
-    var bell = new Bell();
+    var bell = new Bell({
+      notificationIcon: WonderPushSDK.getNotificationIcon(),
+    });
 
     this.showBell = function () {
       var readyState = document.readyState;
@@ -61,7 +85,8 @@
     }.bind(this);
 
     this.showBell();
-    bell.paragraph.innerText = 'Subscribe to notifications';
+    bell.paragraph.innerText = _('Subscribe to notifications');
+    bell.dialogButton.textContent = _('Subscribe');
   });
 
 })();
