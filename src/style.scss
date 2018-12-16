@@ -38,10 +38,11 @@ $notification-icon-size: 53px;
       width: $compact-width;
       opacity: 0.5;
     }
-
   }
 
   .wonderpush-icon-container {
+    transform-origin: center center;
+    transform: scale(1);
     transition: all $transition-duration ease-in;
     width: $default-width;
     height: 100%;
@@ -61,6 +62,7 @@ $notification-icon-size: 53px;
     }
 
     .wonderpush-icon-badge {
+      @include collapsible(center center);
       font-size: 0.8em;
       width: 1.4em;
       height: 1.4em;
