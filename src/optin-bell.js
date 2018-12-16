@@ -8,6 +8,16 @@
    * @param {string?} options.notificationIcon
    * @param {string?} options.dialogTitle
    * @constructor
+   * @class Bell
+   * @property {HTMLElement} icon
+   * @property {HTMLElement} iconContainer
+   * @property {HTMLElement} iconBadge
+   * @property {HTMLElement} paragraph
+   * @property {HTMLElement} help
+   * @property {HTMLElement} dialog
+   * @property {HTMLElement} dialogButton
+   * @property {HTMLElement} notification
+   * @property {HTMLElement} notificationIcon
    */
   function Bell(options) {
     options = options || {};
@@ -40,11 +50,42 @@
       elt.classList.add(definition.cls);
     }.bind(this));
 
+    var makeTransitionPromise = function(elt) {
+      return new Promise(function(res, rej) {
+        var listener = function(event) {
+          elt.removeEventListener('transitionend', listener);
+          res();
+        };
+        elt.addEventListener('transitionend', listener);
+      })
+    };
+    // Instance methods
+    this.collapse = function(prop) {
+      var elt = typeof prop === 'string' ? this[prop] : prop;
+      if (!elt) return;
+      if (elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
+      elt.classList.add('wonderpush-collapsed');
+      return makeTransitionPromise(elt);
+    }.bind(this);
+
+    this.uncollapse = function(prop) {
+      var elt = typeof prop === 'string' ? this[prop] : prop;
+      if (!elt) return;
+      if (!elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
+      elt.classList.remove('wonderpush-collapsed');
+      return makeTransitionPromise(elt);
+    }.bind(this);
+
     // Configure a few things
     if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
     this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
     this.iconBadge.textContent = '1';
+    this.collapse('help');
+    this.collapse('dialog');
+    this.collapse('paragraph');
+    this.collapse('iconBadge');
   }
+
 
   /**
    * WonderPush Web SDK plugin to present the user an opt-in bell before prompting her for push permission.
@@ -86,9 +127,123 @@
       }
     }.bind(this);
 
+    /**
+     * Adapts the UI to a subscription state change
+     * @param {WonderPushSDK.prototype.SubscriptionState} state
+     * @param {object|undefined} event. If present, the event that reported the state change
+     */
+    this.updateTexts = function() {
+      var state = WonderPushSDK.Notification.getSubscriptionState();
+      switch (state) {
+        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+          bell.dialogButton.textContent =_('Unsubscribe');
+          bell.paragraph.textContent = _('You\'re subscribed to notifications');
+          break;
+        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+          bell.dialogButton.textContent =_('Subscribe');
+          bell.paragraph.textContent = _('You are not receiving any notifications');
+          break;
+        case WonderPushSDK.SubscriptionState.UNDETERMINED:
+          bell.dialogButton.textContent = _('Loading');
+          bell.paragraph.textContent = _('Loading');
+          break;
+        case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
+          bell.dialogButton.textContent = _('Subscribe');
+          bell.paragraph.textContent = _('Subscribe to notifications');
+          break;
+      }
+    };
+
     this.showBell();
-    bell.paragraph.innerText = _('Subscribe to notifications');
-    bell.dialogButton.textContent = _('Subscribe');
+
+    // Handle subscription state changes
+    this.updateTexts();
+    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+      bell.element.classList.add('wonderpush-discrete');
+    }
+    window.addEventListener('WonderPushEvent', function(event) {
+      if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
+      this.updateTexts();
+      if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
+        bell.paragraph.textContent = _('You won\'t receive more notifications');
+        setTimeout(function() {
+          bell.collapse(bell.paragraph);
+          this.updateTexts();
+        }.bind(this), 1200);
+      }
+      if (event.detail.state === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+        bell.paragraph.textContent = _('Thanks for subscribing!');
+        bell.uncollapse(bell.paragraph);
+        setTimeout(function() {
+          bell.element.classList.add('wonderpush-discrete');
+          bell.collapse(bell.paragraph)
+            .then(function() {
+              this.updateTexts();
+            }.bind(this));
+        }.bind(this), 1200);
+      }
+    }.bind(this));
+
+    // Handle clicks on button
+    bell.dialogButton.addEventListener('click', function(event) {
+      switch(WonderPushSDK.Notification.getSubscriptionState()) {
+        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+          // Unsubscribe
+          WonderPushSDK.setNotificationEnabled(false, event)
+            .then(function() {
+              bell.collapse(bell.dialog);
+              bell.uncollapse(bell.paragraph);
+            });
+          break;
+        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+          // Subscribe
+          WonderPushSDK.setNotificationEnabled(true, event);
+          bell.collapse(bell.dialog);
+          break;
+      }
+    });
+
+    // Show badge if appropriate
+    WonderPushSDK.Storage.get('badgeShown')
+      .then(function(result) {
+        if (result.badgeShown) return;
+        WonderPushSDK.Storage.set('badgeShown', true);
+        bell.uncollapse(bell.iconBadge);
+      });
+
+
+    // Handle mouse events
+    bell.iconContainer.addEventListener('mouseenter', function() {
+      bell.collapse(bell.iconBadge);
+      bell.uncollapse(bell.paragraph);
+    });
+    bell.iconContainer.addEventListener('mouseleave', function() {
+      bell.collapse(bell.paragraph)
+        .then(function() {
+          this.updateTexts();
+        }.bind(this));
+    }.bind(this));
+    bell.iconContainer.addEventListener('click', function(event) {
+      switch(WonderPushSDK.Notification.getSubscriptionState()) {
+        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+          bell.uncollapse(bell.dialog);
+          bell.collapse(bell.paragraph);
+          bell.element.classList.remove('wonderpush-discrete');
+          break;
+        case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
+          // Subscribe
+          WonderPushSDK.setNotificationEnabled(true, event);
+          bell.collapse(bell.dialog);
+          break;
+      }
+    });
+    window.document.addEventListener('click', function(event) {
+      if (!bell.element.contains(event.srcElement)) {
+        bell.collapse(bell.dialog);
+        this.updateTexts();
+      }
+    }.bind(this));
   });
 
 })();

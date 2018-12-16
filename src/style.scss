@@ -38,9 +38,19 @@ $notification-icon-size: 53px;
       width: $compact-width;
       opacity: 0.5;
     }
+
+    &:hover {
+      height: $default-height;
+      .wonderpush-icon-container {
+        border-radius: $default-width / 2;
+        width: $default-width;
+        opacity: 1;
+      }
+    }
   }
 
   .wonderpush-icon-container {
+    cursor: pointer;
     transform-origin: center center;
     transform: scale(1);
     transition: all $transition-duration ease-in;
