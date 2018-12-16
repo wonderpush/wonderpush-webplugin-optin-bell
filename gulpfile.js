@@ -20,6 +20,7 @@ let git = require('gulp-git');
 let copy = require('gulp-copy');
 let babel = require('gulp-babel');
 let cssBase64 = require('gulp-css-base64');
+let plumber = require('gulp-plumber');
 
 const PLUGIN_NAME = pkg.main.replace(/^.*\/([^\.]*)\..*$/, '$1');
 
@@ -106,6 +107,7 @@ gulp.task('copy-res', function() {
 
 gulp.task('dist-js', ['minify-css', 'minify-less', 'minify-sass', 'copy-res'], function() {
     return gulp.src(JS_GLOB)
+        .pipe(plumber())
         .pipe(jshint())
         .pipe(jshint.reporter())
         .pipe(jshint.reporter('fail'))
