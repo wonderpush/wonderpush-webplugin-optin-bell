@@ -50,6 +50,7 @@ $notification-icon-size: 53px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 
     .wonderpush-icon {
       mask-image: url(./bell.svg);
@@ -57,6 +58,22 @@ $notification-icon-size: 53px;
       background: $default-bell-color;
       width: 60%;
       height: 60%;
+    }
+
+    .wonderpush-icon-badge {
+      font-size: 0.8em;
+      width: 1.4em;
+      height: 1.4em;
+      display: flex;
+      border-radius: 1em;
+      background: black;
+      border: 1px solid white;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 10%;
+      top: 10%;
+      color: white;
     }
   }
 

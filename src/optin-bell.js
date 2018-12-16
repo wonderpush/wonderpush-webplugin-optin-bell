@@ -17,6 +17,7 @@
     var definitions = [
       { cls: 'wonderpush-icon-container', name: 'iconContainer'},
       { cls: 'wonderpush-icon', name: 'icon', parent: 'iconContainer'},
+      { cls: 'wonderpush-icon-badge', name: 'iconBadge', parent: 'iconContainer'},
       { cls: 'wonderpush-paragraph', name: 'paragraph'},
       { cls: 'wonderpush-help', name: 'help'},
       { cls: 'wonderpush-dialog', name: 'dialog'},
@@ -42,6 +43,7 @@
     // Configure a few things
     if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
     this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
+    this.iconBadge.textContent = '1';
   }
 
   /**
