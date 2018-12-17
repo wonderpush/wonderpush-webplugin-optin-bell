@@ -149,7 +149,7 @@
           break;
         case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
           bell.dialogButton.textContent = _('Subscribe');
-          bell.paragraph.textContent = _('Subscribe to notifications');
+          bell.paragraph.textContent = _('Click to subscribe to notifications');
           break;
       }
     };
