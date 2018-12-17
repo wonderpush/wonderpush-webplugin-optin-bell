@@ -77,6 +77,12 @@
       });
     };
     // Instance methods
+    this.isCollapsed = function(prop) {
+      var elt = typeof prop === 'string' ? this[prop] : prop;
+      if (!elt) return false;
+      return elt.classList.contains('wonderpush-collapsed');
+    }.bind(this);
+
     this.collapse = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
@@ -298,7 +304,7 @@
     // Handle mouse events
     bell.iconContainer.addEventListener('mouseenter', function() {
       bell.collapse(bell.iconBadge);
-      bell.uncollapse(bell.paragraph);
+      if (bell.isCollapsed(bell.dialog)) bell.uncollapse(bell.paragraph);
     });
     bell.iconContainer.addEventListener('mouseleave', function() {
       bell.collapse(bell.paragraph)
@@ -307,6 +313,10 @@
         }.bind(this));
     }.bind(this));
     bell.iconContainer.addEventListener('click', function(event) {
+      if (!bell.isCollapsed(bell.dialog)) {
+        bell.collapse(bell.dialog);
+        return;
+      }
       var state = WonderPushSDK.Notification.getSubscriptionState();
       switch(state) {
         case WonderPushSDK.SubscriptionState.DENIED: {
