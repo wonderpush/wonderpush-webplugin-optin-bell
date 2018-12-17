@@ -191,19 +191,6 @@
       advancedSettingsDescription: options.advancedSettingsDescription,
       advancedSettingsFineprint: options.advancedSettingsFineprint,
     });
-    if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
-    if (options.position === 'right') bell.element.classList.add('wonderpush-right');
-    if (options.color) {
-      bell.iconContainer.style.backgroundColor = options.color;
-      bell.dialogButton.style.backgroundColor = options.color;
-      bell.dialogAdvancedSettingsClearButton.style.color = options.color;
-      bell.dialogAdvancedSettingsDownloadButton.style.color = options.color;
-      bell.dialogAdvancedSettingsClearButton.style.borderColor = options.color;
-      bell.dialogAdvancedSettingsDownloadButton.style.borderColor = options.color;
-    }
-    if (options.bellIcon) {
-      bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
-    }
 
     /**
      * Attaches the bell element to the document body
@@ -253,10 +240,6 @@
     };
 
     // Handle subscription state changes
-    this.updateTexts();
-    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-      bell.element.classList.add('wonderpush-discrete');
-    }
     window.addEventListener('WonderPushEvent', function(event) {
       if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
       this.updateTexts();
@@ -323,16 +306,6 @@
       }
     });
 
-    // Show badge if appropriate
-    if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
-      WonderPushSDK.Storage.get('badgeShown')
-        .then(function(result) {
-          if (result.badgeShown) return;
-          WonderPushSDK.Storage.set('badgeShown', true);
-          bell.uncollapse(bell.iconBadge);
-        });
-    }
-
     // Handle mouse events
     bell.iconContainer.addEventListener('mouseenter', function() {
       bell.collapse(bell.iconBadge);
@@ -388,14 +361,45 @@
       }
     }.bind(this));
 
+    // Main program
+
+    // Options
+    if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
+    if (options.position === 'right') bell.element.classList.add('wonderpush-right');
+    if (options.color) {
+      bell.iconContainer.style.backgroundColor = options.color;
+      bell.dialogButton.style.backgroundColor = options.color;
+      bell.dialogAdvancedSettingsClearButton.style.color = options.color;
+      bell.dialogAdvancedSettingsDownloadButton.style.color = options.color;
+      bell.dialogAdvancedSettingsClearButton.style.borderColor = options.color;
+      bell.dialogAdvancedSettingsDownloadButton.style.borderColor = options.color;
+    }
+    if (options.bellIcon) {
+      bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
+    }
+    // Attach
     this.showBell();
+    // Texts
+    this.updateTexts();
+    // Discrete
+    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+      bell.element.classList.add('wonderpush-discrete');
+    }
+    // Deactivated
     if (options.hideWhenSubscribed
       && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
       bell.element.classList.add('wonderpush-hidden');
       bell.element.classList.add('wonderpush-deactivated');
     }
+    // Unread badge
+    if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
+      WonderPushSDK.Storage.get('badgeShown')
+        .then(function(result) {
+          if (result.badgeShown) return;
+          WonderPushSDK.Storage.set('badgeShown', true);
+          bell.uncollapse(bell.iconBadge);
+        });
+    }
 
-
-  }});
-
+    }});
 })();
