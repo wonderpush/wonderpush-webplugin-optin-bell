@@ -53,8 +53,8 @@
       { cls: 'wonderpush-dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
       { cls: 'wonderpush-dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
       { cls: 'wonderpush-dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
-      { cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
       { cls: 'wonderpush-dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      { cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
       { cls: 'wonderpush-dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
     ];
 
