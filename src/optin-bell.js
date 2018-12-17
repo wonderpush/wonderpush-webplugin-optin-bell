@@ -24,7 +24,7 @@
    * @param text
    * @returns {*}
    */
-  var _ = function(text) {
+  var _ = function (text) {
     var language = (navigator.language || '').split('-')[0];
     if (translations.hasOwnProperty(language) && translations[language][text]) return translations[language][text];
     return text;
@@ -36,15 +36,16 @@
    * @param elt
    * @returns {Promise<void>}
    */
-  var makeTransitionPromise = function(elt) {
-    return new Promise(function(res, rej) {
-      var listener = function(event) {
+  var makeTransitionPromise = function (elt) {
+    return new Promise(function (res, rej) {
+      var listener = function (event) {
         elt.removeEventListener('transitionend', listener);
         res();
       };
       elt.addEventListener('transitionend', listener);
     });
   };
+
   /**
    * A display object that builds the DOM and keep references to important nodes.
    * @param {object?} options
@@ -78,28 +79,28 @@
     this.element.classList.add('wonderpush-bell');
 
     var definitions = [
-      { cls: 'wonderpush-icon-container', name: 'iconContainer'},
-      { cls: 'wonderpush-icon', name: 'icon', parent: 'iconContainer'},
-      { cls: 'wonderpush-icon-badge', name: 'iconBadge', parent: 'iconContainer'},
-      { cls: 'wonderpush-paragraph', name: 'paragraph'},
-      { cls: 'wonderpush-help', name: 'help'},
-      { cls: 'wonderpush-dialog', name: 'dialog'},
-      { cls: 'wonderpush-dialog-title', name: 'dialogTitle', parent: 'dialog'},
-      { cls: 'wonderpush-notification', name: 'notification', parent: 'dialog'},
-      { cls: 'wonderpush-notification-icon', name: 'notificationIcon', parent: 'notification'},
-      { cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
-      { cls: 'wonderpush-notification-paragraph-medium', parent: 'notification'},
-      { cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
-      { cls: 'wonderpush-notification-paragraph-small', parent: 'notification'},
-      { cls: 'wonderpush-dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
-      { cls: 'wonderpush-dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
-      { cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
-      { cls: 'wonderpush-dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
-      { cls: 'wonderpush-dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
-      { cls: 'wonderpush-dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
-      { cls: 'wonderpush-dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      { cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      { cls: 'wonderpush-dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
+      {cls: 'wonderpush-icon-container', name: 'iconContainer'},
+      {cls: 'wonderpush-icon', name: 'icon', parent: 'iconContainer'},
+      {cls: 'wonderpush-icon-badge', name: 'iconBadge', parent: 'iconContainer'},
+      {cls: 'wonderpush-paragraph', name: 'paragraph'},
+      {cls: 'wonderpush-help', name: 'help'},
+      {cls: 'wonderpush-dialog', name: 'dialog'},
+      {cls: 'wonderpush-dialog-title', name: 'dialogTitle', parent: 'dialog'},
+      {cls: 'wonderpush-notification', name: 'notification', parent: 'dialog'},
+      {cls: 'wonderpush-notification-icon', name: 'notificationIcon', parent: 'notification'},
+      {cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
+      {cls: 'wonderpush-notification-paragraph-medium', parent: 'notification'},
+      {cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
+      {cls: 'wonderpush-notification-paragraph-small', parent: 'notification'},
+      {cls: 'wonderpush-dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
+      {cls: 'wonderpush-dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
+      {cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
+      {cls: 'wonderpush-dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
+      {cls: 'wonderpush-dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
+      {cls: 'wonderpush-dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
+      {cls: 'wonderpush-dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      {cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      {cls: 'wonderpush-dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
     ];
 
     // Create the DOM
@@ -116,7 +117,7 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Boolean}
      */
-    this.isCollapsed = function(prop) {
+    this.isCollapsed = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return false;
       return elt.classList.contains('wonderpush-collapsed');
@@ -128,14 +129,16 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Promise}
      */
-    this.collapse = function(prop) {
+    this.collapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
       if (elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
       elt.classList.add('wonderpush-collapsed');
       var result = makeTransitionPromise(elt);
       if (elt === this.dialog) {
-        result.then(function() { this.collapse(this.dialogAdvancedSettings); }.bind(this));
+        result.then(function () {
+          this.collapse(this.dialogAdvancedSettings);
+        }.bind(this));
       }
       return result;
     }.bind(this);
@@ -146,7 +149,7 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Promise}
      */
-    this.uncollapse = function(prop) {
+    this.uncollapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
       if (!elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
@@ -159,7 +162,7 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Promise}
      */
-    this.toggleCollapse = function(prop) {
+    this.toggleCollapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
       if (elt.classList.contains('wonderpush-collapsed')) return this.uncollapse(elt);
@@ -172,10 +175,10 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Promise}
      */
-    this.deactivate = function() {
+    this.deactivate = function () {
       if (this.element.classList.contains('wonderpush-deactivated')) return;
       this.element.classList.add('wonderpush-deactivated');
-      return makeTransitionPromise(this.element).then(function() {
+      return makeTransitionPromise(this.element).then(function () {
         this.element.classList.add('wonderpush-hidden');
       }.bind(this));
     }.bind(this);
@@ -186,10 +189,10 @@
      * @param {HTMLElement|string} Element of name of a property resolving to an element
      * @return {Promise}
      */
-    this.activate = function() {
+    this.activate = function () {
       if (!this.element.classList.contains('wonderpush-deactivated')) return;
       this.element.classList.remove('wonderpush-hidden');
-      setTimeout(function() {  // Needs setTimeout to be animated
+      setTimeout(function () {  // Needs setTimeout to be animated
         this.element.classList.remove('wonderpush-deactivated');
       }.bind(this), 0);
       return makeTransitionPromise(this.element);
@@ -206,7 +209,9 @@
     }
     this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
     this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
-    this.dialogSettingsButton.addEventListener('click', function() { this.toggleCollapse(this.dialogAdvancedSettings); }.bind(this));
+    this.dialogSettingsButton.addEventListener('click', function () {
+      this.toggleCollapse(this.dialogAdvancedSettings);
+    }.bind(this));
     this.iconBadge.textContent = '1';
     this.collapse('help');
     this.collapse('dialog');
@@ -256,223 +261,226 @@
    * @memberof external:WonderPushPluginSDK
    * @see {@link https://wonderpush.github.io/wonderpush-javascript-sdk/latest/WonderPushPluginSDK.html#.TriggersConfig|WonderPush JavaScript Plugin SDK triggers configuration reference}
    */
-  WonderPush.registerPlugin("optin-bell", { window: function OptinBell(WonderPushSDK, options) {
-    options = options || {};
-    WonderPushSDK.loadStylesheet('style.css');
-    var bell = new Bell({
-      notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
-      dialogTitle: options.dialogTitle,
-      advancedSettingsDescription: options.advancedSettingsDescription,
-      advancedSettingsFineprint: options.advancedSettingsFineprint,
-    });
+  WonderPush.registerPlugin("optin-bell", {
+    window: function OptinBell(WonderPushSDK, options) {
+      options = options || {};
+      WonderPushSDK.loadStylesheet('style.css');
+      var bell = new Bell({
+        notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
+        dialogTitle: options.dialogTitle,
+        advancedSettingsDescription: options.advancedSettingsDescription,
+        advancedSettingsFineprint: options.advancedSettingsFineprint,
+      });
 
-    /**
-     * Attaches the bell element to the document body
-     * @type {any}
-     */
-    this.showBell = function () {
-      var readyState = window.document.readyState;
-      var attach = function() { window.document.body.appendChild(bell.element); };
-      if (readyState === 'loading') {
-        window.document.addEventListener('domcontentloaded', attach);
-      } else {
-        attach();
-      }
-    }.bind(this);
+      /**
+       * Attaches the bell element to the document body
+       * @type {any}
+       */
+      this.showBell = function () {
+        var readyState = window.document.readyState;
+        var attach = function () {
+          window.document.body.appendChild(bell.element);
+        };
+        if (readyState === 'loading') {
+          window.document.addEventListener('domcontentloaded', attach);
+        } else {
+          attach();
+        }
+      }.bind(this);
 
-    /**
-     * Adapts the UI to a subscription state change
-     * @param {WonderPushSDK.prototype.SubscriptionState} state
-     * @param {object|undefined} event. If present, the event that reported the state change
-     */
-    this.updateTexts = function() {
-      var state = WonderPushSDK.Notification.getSubscriptionState();
-      switch (state) {
-        case WonderPushSDK.SubscriptionState.DENIED:
-          bell.dialogButton.textContent = '';
-          bell.paragraph.textContent = options.blockedText || _('You\'ve blocked notifications');
-          // We don't want to load this earlier
-          bell.help.style.backgroundImage = 'url(https://cdn.by.wonderpush.com/plugins/optin-bell/1.0.0/allow-notifications.jpg)';
-          break;
-        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
-          bell.dialogButton.textContent = options.unsubscribeButtonTitle || _('Unsubscribe');
-          bell.paragraph.textContent = options.alreadySubscribedText || _('You\'re subscribed to notifications');
-          break;
-        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
-          bell.dialogButton.textContent = options.subscribeButtonTitle || _('Subscribe');
-          bell.paragraph.textContent = options.alreadyUnsubscribedText || _('You are not receiving any notifications');
-          break;
-        case WonderPushSDK.SubscriptionState.UNDETERMINED:
-          bell.dialogButton.textContent = _('Loading');
-          bell.paragraph.textContent = _('Loading');
-          break;
-        case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
-          bell.dialogButton.textContent = _('Subscribe');
-          bell.paragraph.textContent = options.subscribeInviteText || _('Click to subscribe to notifications');
-          break;
-      }
-    };
+      /**
+       * Adapts the UI to a subscription state change
+       * @param {WonderPushSDK.prototype.SubscriptionState} state
+       * @param {object|undefined} event. If present, the event that reported the state change
+       */
+      this.updateTexts = function () {
+        var state = WonderPushSDK.Notification.getSubscriptionState();
+        switch (state) {
+          case WonderPushSDK.SubscriptionState.DENIED:
+            bell.dialogButton.textContent = '';
+            bell.paragraph.textContent = options.blockedText || _('You\'ve blocked notifications');
+            // We don't want to load this earlier
+            bell.help.style.backgroundImage = 'url(https://cdn.by.wonderpush.com/plugins/optin-bell/1.0.0/allow-notifications.jpg)';
+            break;
+          case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+            bell.dialogButton.textContent = options.unsubscribeButtonTitle || _('Unsubscribe');
+            bell.paragraph.textContent = options.alreadySubscribedText || _('You\'re subscribed to notifications');
+            break;
+          case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+            bell.dialogButton.textContent = options.subscribeButtonTitle || _('Subscribe');
+            bell.paragraph.textContent = options.alreadyUnsubscribedText || _('You are not receiving any notifications');
+            break;
+          case WonderPushSDK.SubscriptionState.UNDETERMINED:
+            bell.dialogButton.textContent = _('Loading');
+            bell.paragraph.textContent = _('Loading');
+            break;
+          case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
+            bell.dialogButton.textContent = _('Subscribe');
+            bell.paragraph.textContent = options.subscribeInviteText || _('Click to subscribe to notifications');
+            break;
+        }
+      };
 
-    // Handle subscription state changes
-    window.addEventListener('WonderPushEvent', function(event) {
-      if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
-      this.updateTexts();
-      bell.collapse(bell.dialog);
-      bell.collapse(bell.help);
-      if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
-        bell.paragraph.textContent = options.unsubscribedText || _('You won\'t receive more notifications');
-        setTimeout(function() {
-          bell.collapse(bell.paragraph);
-          this.updateTexts();
+      // Handle subscription state changes
+      window.addEventListener('WonderPushEvent', function (event) {
+        if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
+        this.updateTexts();
+        bell.collapse(bell.dialog);
+        bell.collapse(bell.help);
+        if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
+          bell.paragraph.textContent = options.unsubscribedText || _('You won\'t receive more notifications');
+          setTimeout(function () {
+            bell.collapse(bell.paragraph);
+            this.updateTexts();
+            // Activate the bell
+            if (options.hideWhenSubscribed) {
+              bell.activate();
+            }
+          }.bind(this), 1200);
+        }
+        if (event.detail.state === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+          bell.paragraph.textContent = options.subscribedText || _('Thanks for subscribing!');
+          bell.uncollapse(bell.paragraph);
+          // Set discrete after a while
+          setTimeout(function () {
+            // Deactivate the bell
+            if (options.hideWhenSubscribed) {
+              bell.deactivate();
+              return;
+            }
+
+            bell.element.classList.add('wonderpush-discrete');
+            bell.collapse(bell.paragraph)
+              .then(function () {
+                this.updateTexts();
+              }.bind(this));
+          }.bind(this), 1200);
+        }
+        if (event.detail.state === WonderPushSDK.SubscriptionState.DENIED) {
+          bell.element.classList.remove('wonderpush-discrete');
+          bell.uncollapse(bell.paragraph);
           // Activate the bell
           if (options.hideWhenSubscribed) {
             bell.activate();
           }
-        }.bind(this), 1200);
-      }
-      if (event.detail.state === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-        bell.paragraph.textContent = options.subscribedText || _('Thanks for subscribing!');
-        bell.uncollapse(bell.paragraph);
-        // Set discrete after a while
-        setTimeout(function() {
-          // Deactivate the bell
-          if (options.hideWhenSubscribed) {
-            bell.deactivate();
-            return;
-          }
-
-          bell.element.classList.add('wonderpush-discrete');
-          bell.collapse(bell.paragraph)
-            .then(function() {
-              this.updateTexts();
-            }.bind(this));
-        }.bind(this), 1200);
-      }
-      if (event.detail.state === WonderPushSDK.SubscriptionState.DENIED) {
-        bell.element.classList.remove('wonderpush-discrete');
-        bell.uncollapse(bell.paragraph);
-        // Activate the bell
-        if (options.hideWhenSubscribed) {
-          bell.activate();
+          setTimeout(function () {
+            bell.collapse(bell.paragraph);
+          }.bind(this), 1200);
         }
-        setTimeout(function() {
-          bell.collapse(bell.paragraph);
-        }.bind(this), 1200);
-      }
-    }.bind(this));
+      }.bind(this));
 
-    // Handle clicks on button
-    bell.dialogButton.addEventListener('click', function(event) {
-      switch(WonderPushSDK.Notification.getSubscriptionState()) {
-        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
-          // Unsubscribe
-          WonderPushSDK.setNotificationEnabled(false, event)
-            .then(function() {
-              bell.collapse(bell.dialog);
-              bell.uncollapse(bell.paragraph);
-            });
-          break;
-        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
-          // Subscribe
-          WonderPushSDK.setNotificationEnabled(true, event);
+      // Handle clicks on button
+      bell.dialogButton.addEventListener('click', function (event) {
+        switch (WonderPushSDK.Notification.getSubscriptionState()) {
+          case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+            // Unsubscribe
+            WonderPushSDK.setNotificationEnabled(false, event)
+              .then(function () {
+                bell.collapse(bell.dialog);
+                bell.uncollapse(bell.paragraph);
+              });
+            break;
+          case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+            // Subscribe
+            WonderPushSDK.setNotificationEnabled(true, event);
+            bell.collapse(bell.dialog);
+            break;
+        }
+      });
+
+      // Handle mouse events
+      bell.iconContainer.addEventListener('mouseenter', function () {
+        bell.collapse(bell.iconBadge);
+        if (bell.isCollapsed(bell.dialog)) bell.uncollapse(bell.paragraph);
+      });
+      bell.iconContainer.addEventListener('mouseleave', function () {
+        bell.collapse(bell.paragraph)
+          .then(function () {
+            this.updateTexts();
+          }.bind(this));
+      }.bind(this));
+      bell.iconContainer.addEventListener('click', function (event) {
+        if (!bell.isCollapsed(bell.dialog)) {
           bell.collapse(bell.dialog);
-          break;
-      }
-    });
-
-    // Handle mouse events
-    bell.iconContainer.addEventListener('mouseenter', function() {
-      bell.collapse(bell.iconBadge);
-      if (bell.isCollapsed(bell.dialog)) bell.uncollapse(bell.paragraph);
-    });
-    bell.iconContainer.addEventListener('mouseleave', function() {
-      bell.collapse(bell.paragraph)
-        .then(function() {
-          this.updateTexts();
-        }.bind(this));
-    }.bind(this));
-    bell.iconContainer.addEventListener('click', function(event) {
-      if (!bell.isCollapsed(bell.dialog)) {
-        bell.collapse(bell.dialog);
-        return;
-      }
-      var state = WonderPushSDK.Notification.getSubscriptionState();
-      switch(state) {
-        case WonderPushSDK.SubscriptionState.DENIED: {
-          // Do not show help picture if the user is on another domain
-          // because performing help steps would allow notifications on the wrong domain
-          if (WonderPushSDK.isOnRightDomain()) {
-            bell.uncollapse(bell.help);
+          return;
+        }
+        var state = WonderPushSDK.Notification.getSubscriptionState();
+        switch (state) {
+          case WonderPushSDK.SubscriptionState.DENIED: {
+            // Do not show help picture if the user is on another domain
+            // because performing help steps would allow notifications on the wrong domain
+            if (WonderPushSDK.isOnRightDomain()) {
+              bell.uncollapse(bell.help);
+              bell.collapse(bell.paragraph);
+              bell.element.classList.remove('wonderpush-discrete');
+            } else {
+              // TODO: uncomment me when the subscription popup has a better behavior and presents acceptable help to the user.
+              // WonderPushSDK.setNotificationEnabled(true, event);
+            }
+          }
+            break;
+          case WonderPushSDK.SubscriptionState.SUBSCRIBED:
+          case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+            bell.dialogSettingsButton.style.display = state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
+            bell.uncollapse(bell.dialog);
             bell.collapse(bell.paragraph);
             bell.element.classList.remove('wonderpush-discrete');
-          } else {
-            // TODO: uncomment me when the subscription popup has a better behavior and presents acceptable help to the user.
-            // WonderPushSDK.setNotificationEnabled(true, event);
-          }
+            break;
+          case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
+            // Subscribe
+            WonderPushSDK.setNotificationEnabled(true, event);
+            bell.collapse(bell.dialog);
+            break;
         }
-          break;
-        case WonderPushSDK.SubscriptionState.SUBSCRIBED:
-        case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
-          bell.dialogSettingsButton.style.display = state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
-          bell.uncollapse(bell.dialog);
-          bell.collapse(bell.paragraph);
-          bell.element.classList.remove('wonderpush-discrete');
-          break;
-        case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
-          // Subscribe
-          WonderPushSDK.setNotificationEnabled(true, event);
+      });
+      window.document.addEventListener('click', function (event) {
+        if (!bell.element.contains(event.srcElement)) {
           bell.collapse(bell.dialog);
-          break;
+          bell.collapse(bell.help);
+          if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) bell.element.classList.add('wonderpush-discrete');
+
+          this.updateTexts();
+        }
+      }.bind(this));
+
+      // Main program
+
+      // Options
+      if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
+      if (options.position === 'right') bell.element.classList.add('wonderpush-right');
+      if (options.color) {
+        bell.iconContainer.style.backgroundColor = options.color;
+        bell.dialogButton.style.backgroundColor = options.color;
+        bell.dialogAdvancedSettingsClearButton.style.color = options.color;
+        bell.dialogAdvancedSettingsDownloadButton.style.color = options.color;
+        bell.dialogAdvancedSettingsClearButton.style.borderColor = options.color;
+        bell.dialogAdvancedSettingsDownloadButton.style.borderColor = options.color;
       }
-    });
-    window.document.addEventListener('click', function(event) {
-      if (!bell.element.contains(event.srcElement)) {
-        bell.collapse(bell.dialog);
-        bell.collapse(bell.help);
-        if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) bell.element.classList.add('wonderpush-discrete');
-
-        this.updateTexts();
+      if (options.bellIcon) {
+        bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
       }
-    }.bind(this));
-
-    // Main program
-
-    // Options
-    if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
-    if (options.position === 'right') bell.element.classList.add('wonderpush-right');
-    if (options.color) {
-      bell.iconContainer.style.backgroundColor = options.color;
-      bell.dialogButton.style.backgroundColor = options.color;
-      bell.dialogAdvancedSettingsClearButton.style.color = options.color;
-      bell.dialogAdvancedSettingsDownloadButton.style.color = options.color;
-      bell.dialogAdvancedSettingsClearButton.style.borderColor = options.color;
-      bell.dialogAdvancedSettingsDownloadButton.style.borderColor = options.color;
+      // Attach
+      this.showBell();
+      // Texts
+      this.updateTexts();
+      // Discrete
+      if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+        bell.element.classList.add('wonderpush-discrete');
+      }
+      // Deactivated
+      if (options.hideWhenSubscribed && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+        bell.element.classList.add('wonderpush-hidden');
+        bell.element.classList.add('wonderpush-deactivated');
+      }
+      // Unread badge
+      if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
+        WonderPushSDK.Storage.get('badgeShown')
+          .then(function (result) {
+            if (result.badgeShown) return;
+            WonderPushSDK.Storage.set('badgeShown', true);
+            bell.uncollapse(bell.iconBadge);
+          });
+      }
     }
-    if (options.bellIcon) {
-      bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
-    }
-    // Attach
-    this.showBell();
-    // Texts
-    this.updateTexts();
-    // Discrete
-    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-      bell.element.classList.add('wonderpush-discrete');
-    }
-    // Deactivated
-    if (options.hideWhenSubscribed && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-      bell.element.classList.add('wonderpush-hidden');
-      bell.element.classList.add('wonderpush-deactivated');
-    }
-    // Unread badge
-    if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
-      WonderPushSDK.Storage.get('badgeShown')
-        .then(function(result) {
-          if (result.badgeShown) return;
-          WonderPushSDK.Storage.set('badgeShown', true);
-          bell.uncollapse(bell.iconBadge);
-        });
-    }
-
-    }});
+  });
 })();
