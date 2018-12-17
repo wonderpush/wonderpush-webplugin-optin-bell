@@ -82,7 +82,11 @@
       if (!elt) return;
       if (elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
       elt.classList.add('wonderpush-collapsed');
-      return makeTransitionPromise(elt);
+      var result = makeTransitionPromise(elt);
+      if (elt === this.dialog) {
+        result.then(function() { this.collapse(this.dialogAdvancedSettings); }.bind(this));
+      }
+      return result;
     }.bind(this);
 
     this.uncollapse = function(prop) {
