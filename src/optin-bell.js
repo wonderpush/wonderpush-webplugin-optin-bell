@@ -1,11 +1,35 @@
 (function () {
 
+  var translations = {
+    "fr": {
+      "Manage Notifications": "Gestion des notifications",
+      "Your personal notification data:": "Vos données personnelles de notification",
+      "WonderPush fully supports european GDPR": "WonderPush soutient pleinement la RGPD européenne",
+      "Clear": "Effacer",
+      "Download": "Télécharger",
+      "You've blocked notifications": "Vous avez bloqué les notifications",
+      "Unsubscribe": "Désinscription",
+      "You're subscribed to notifications": "Vous n'êtes pas abonné aux notifications",
+      "Subscribe": "Je m'abonne",
+      "You are not receiving any notifications": "Vous ne recevez pas de notifications",
+      "Loading": "Chargement",
+      "Subscribe": "Je m'abonne",
+      "Click to subscribe to notifications": "Cliquez pour vous abonner aux notifications",
+      "You won't receive more notifications": "Vous ne recevrez plus de notifications",
+      "Thanks for subscribing!": "Merci de vous être abonné !"
+    }
+  };
+
   /**
    * Translates the given text
    * @param text
    * @returns {*}
    */
-  var _ = function(text) { return text; };
+  var _ = function(text) {
+    var language = (navigator.language || '').split('-')[0];
+    if (translations.hasOwnProperty(language) && translations[language][text]) return translations[language][text];
+    return text;
+  };
 
   /**
    * Installs a one-time 'transitionend' handler on given element and returns a Promise
@@ -198,6 +222,7 @@
   /**
    * @typedef {Object} OptinBell.Options
    * @property {external:WonderPushPluginSDK.TriggersConfig} [triggers] - The triggers configuration for this plugin.
+   * @property {String} [language] - The language code. We currently support 'en' and 'fr'. Defaults to the browser language.
    * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
    * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
