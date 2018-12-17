@@ -115,8 +115,8 @@ $notification-icon-size: 53px;
 
   .wonderpush-help {
     @include collapsible(bottom left);
-    background-image: url(./allow-notifications.jpg);
     background-size: contain;
+
     background-repeat: no-repeat;
     width: 200px * 1.4;
     height: 200px;
