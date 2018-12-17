@@ -1,8 +1,4 @@
 (function () {
-  if ((typeof window) === 'undefined') {
-    return;
-  }
-  var document = window.document;
   var _ = function(text) { return text; };
 
   /**
@@ -24,7 +20,7 @@
    */
   function Bell(options) {
     options = options || {};
-    this.element = document.createElement('div');
+    this.element = window.document.createElement('div');
     this.element.classList.add('wonderpush-bell');
 
     var definitions = [
@@ -46,7 +42,7 @@
 
     // Create the DOM
     definitions.forEach(function (definition) {
-      var elt = document.createElement('div');
+      var elt = window.document.createElement('div');
       if (definition.name) this[definition.name] = elt;
       var parent = this[definition.parent || 'element'];
       parent.appendChild(elt);
@@ -112,19 +108,18 @@
    * @memberof external:WonderPushPluginSDK
    * @see {@link https://wonderpush.github.io/wonderpush-javascript-sdk/latest/WonderPushPluginSDK.html#.TriggersConfig|WonderPush JavaScript Plugin SDK triggers configuration reference}
    */
-  WonderPush.registerPlugin("optin-bell", function OptinBell(WonderPushSDK, options) {
+  WonderPush.registerPlugin("optin-bell", { window: function OptinBell(WonderPushSDK, options) {
     this.style = options.style;
-
     WonderPushSDK.loadStylesheet('style.css');
     var bell = new Bell({
       notificationIcon: WonderPushSDK.getNotificationIcon(),
     });
 
     this.showBell = function () {
-      var readyState = document.readyState;
-      var attach = function() { document.body.appendChild(bell.element); };
+      var readyState = window.document.readyState;
+      var attach = function() { window.document.body.appendChild(bell.element); };
       if (readyState === 'loading') {
-        document.addEventListener('domcontentloaded', attach);
+        window.document.addEventListener('domcontentloaded', attach);
       } else {
         attach();
       }
@@ -247,6 +242,6 @@
         this.updateTexts();
       }
     }.bind(this));
-  });
+  }});
 
 })();
