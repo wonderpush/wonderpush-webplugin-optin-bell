@@ -291,6 +291,8 @@
       if (!bell.element.contains(event.srcElement)) {
         bell.collapse(bell.dialog);
         bell.collapse(bell.help);
+        if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) bell.element.classList.add('wonderpush-discrete');
+
         this.updateTexts();
       }
     }.bind(this));
