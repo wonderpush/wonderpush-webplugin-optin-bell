@@ -96,6 +96,20 @@
    * @typedef {Object} OptinBell.Options
    * @property {external:WonderPushPluginSDK.TriggersConfig} [triggers] - The triggers configuration for this plugin.
    * @property {Object} [style] - Styles to be added to the bell container.
+   * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
+   * @property {String} [position] - Acceptable values are "left" or "right". Defaults to "left".
+   * @property {String} [bellIcon] - URL of the bell icon.
+   * @property {String} [dialogTitle] - Title of the settings dialog. Defaults to "Manage Notifications".
+   * @property {String} [subscribeButtonTitle] - Title of the subscribe button. Defaults to "Subscribe".
+   * @property {String} [unsubscribeButtonTitle] - Title of the subscribe button. Defaults to "Unsubscribe".
+   * @property {String} [notificationIcon] - Url of the mock notification icon in the settings dialog. Defaults to your app's notification icon as specified in your dashboard.
+   * @property {String} [subscribeInviteText] - Text displayed to invite user to subscribe. Defaults to "Click to subscribe to notifications".
+   * @property {String} [alreadySubscribedText] - Text displayed when already subscribed users hover the notification bell. Defaults to "You're subscribed to notifications".
+   * @property {String} [alreadyUnsubscribedText] - Text displayed when unsubscribed users hover the notification bell. Defaults to "You are not receiving any notifications".
+   * @property {String} [blockedText] - Text displayed when already users have blocked notifications. Defaults to "You've blocked notifications".
+   * @property {String} [subscribedText] - Text displayed when users subscribe. Defaults to "Thanks for subscribing!".
+   * @property {String} [unsubscribedText] - Text displayed when users unsubscribe. Defaults to "You won't receive more notifications".
+   * @property {Boolean} [showUnreadBadge] - When true, a badge with an unread count of "1" will be displayed the first time users see the bell. Defaults to true.
    */
   /**
    * The WonderPush JavaScript SDK instance.
@@ -109,12 +123,21 @@
    * @see {@link https://wonderpush.github.io/wonderpush-javascript-sdk/latest/WonderPushPluginSDK.html#.TriggersConfig|WonderPush JavaScript Plugin SDK triggers configuration reference}
    */
   WonderPush.registerPlugin("optin-bell", { window: function OptinBell(WonderPushSDK, options) {
-    this.style = options.style;
+    options = options || {};
     WonderPushSDK.loadStylesheet('style.css');
     var bell = new Bell({
-      notificationIcon: WonderPushSDK.getNotificationIcon(),
+      notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
+      dialogTitle: options.dialogTitle,
     });
-
+    if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
+    if (options.position === 'right') bell.element.classList.add('wonderpush-right');
+    if (options.color) {
+      bell.iconContainer.style.backgroundColor = options.color;
+      bell.dialogButton.style.backgroundColor = options.color;
+    }
+    if (options.bellIcon) {
+      bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
+    }
     this.showBell = function () {
       var readyState = window.document.readyState;
       var attach = function() { window.document.body.appendChild(bell.element); };
@@ -135,17 +158,17 @@
       switch (state) {
         case WonderPushSDK.SubscriptionState.DENIED:
           bell.dialogButton.textContent = '';
-          bell.paragraph.textContent = _('You\'ve blocked notifications');
+          bell.paragraph.textContent = options.blockedText || _('You\'ve blocked notifications');
           // We don't want to load this earlier
           bell.help.style.backgroundImage = 'url(https://cdn.by.wonderpush.com/plugins/optin-bell/1.0.0/allow-notifications.jpg)';
           break;
         case WonderPushSDK.SubscriptionState.SUBSCRIBED:
-          bell.dialogButton.textContent =_('Unsubscribe');
-          bell.paragraph.textContent = _('You\'re subscribed to notifications');
+          bell.dialogButton.textContent = options.unsubscribeButtonTitle || _('Unsubscribe');
+          bell.paragraph.textContent = options.alreadySubscribedText || _('You\'re subscribed to notifications');
           break;
         case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
-          bell.dialogButton.textContent =_('Subscribe');
-          bell.paragraph.textContent = _('You are not receiving any notifications');
+          bell.dialogButton.textContent = options.subscribeButtonTitle || _('Subscribe');
+          bell.paragraph.textContent = options.alreadyUnsubscribedText || _('You are not receiving any notifications');
           break;
         case WonderPushSDK.SubscriptionState.UNDETERMINED:
           bell.dialogButton.textContent = _('Loading');
@@ -153,7 +176,7 @@
           break;
         case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
           bell.dialogButton.textContent = _('Subscribe');
-          bell.paragraph.textContent = _('Click to subscribe to notifications');
+          bell.paragraph.textContent = options.subscribeInviteText || _('Click to subscribe to notifications');
           break;
       }
     };
@@ -169,14 +192,14 @@
       if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
       this.updateTexts();
       if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
-        bell.paragraph.textContent = _('You won\'t receive more notifications');
+        bell.paragraph.textContent = options.unsubscribedText || _('You won\'t receive more notifications');
         setTimeout(function() {
           bell.collapse(bell.paragraph);
           this.updateTexts();
         }.bind(this), 1200);
       }
       if (event.detail.state === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-        bell.paragraph.textContent = _('Thanks for subscribing!');
+        bell.paragraph.textContent = options.subscribedText || _('Thanks for subscribing!');
         bell.uncollapse(bell.paragraph);
         setTimeout(function() {
           bell.element.classList.add('wonderpush-discrete');
@@ -215,12 +238,14 @@
     });
 
     // Show badge if appropriate
-    WonderPushSDK.Storage.get('badgeShown')
-      .then(function(result) {
-        if (result.badgeShown) return;
-        WonderPushSDK.Storage.set('badgeShown', true);
-        bell.uncollapse(bell.iconBadge);
-      });
+    if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
+      WonderPushSDK.Storage.get('badgeShown')
+        .then(function(result) {
+          if (result.badgeShown) return;
+          WonderPushSDK.Storage.set('badgeShown', true);
+          bell.uncollapse(bell.iconBadge);
+        });
+    }
 
 
     // Handle mouse events

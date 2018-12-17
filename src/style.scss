@@ -66,6 +66,8 @@ $notification-icon-size: 53px;
     .wonderpush-icon {
       mask-image: url(./bell.svg);
       -webkit-mask-image: url(./bell.svg);
+      mask-size: contain;
+      -webkit-mask-size: contain;
       background: $default-bell-color;
       width: 60%;
       height: 60%;
@@ -212,6 +214,44 @@ $notification-icon-size: 53px;
       .wonderpush-notification-paragraph-large {
         @include wonderpush-notification-paragraph();
         width: 120px;
+      }
+    }
+  }
+
+  &.wonderpush-right {
+    left: unset;
+    right: 20px;
+    flex-direction: row-reverse;
+    .wonderpush-paragraph {
+      @include collapsible(right);
+      margin-left: unset;
+      margin-right: 12px;
+      &:after {
+        position: absolute;
+        right: unset;
+        left: 100%;
+        border-right-color: transparent;
+        border-left-color: rgba(0,0,0,0.8);
+      }
+    }
+
+    .wonderpush-dialog {
+      @include collapsible(bottom right);
+      left: unset;
+      right: 0;
+      &:after {
+        left: unset;
+        right: 11px;
+      }
+    }
+
+    .wonderpush-help {
+      @include collapsible(bottom right);
+      left: unset;
+      right: 0;
+      &:after {
+        left: unset;
+        right: 11px;
       }
     }
   }
