@@ -9,7 +9,7 @@
       "Download": "Télécharger",
       "You've blocked notifications": "Vous avez bloqué les notifications",
       "Unsubscribe": "Désinscription",
-      "You're subscribed to notifications": "Vous n'êtes pas abonné aux notifications",
+      "You're subscribed to notifications": "Vous êtes abonné aux notifications",
       "Subscribe": "Je m'abonne",
       "You are not receiving any notifications": "Vous ne recevez pas de notifications",
       "Loading": "Chargement",
