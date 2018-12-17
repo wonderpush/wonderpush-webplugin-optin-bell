@@ -138,6 +138,11 @@
     if (options.bellIcon) {
       bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
     }
+
+    /**
+     * Attaches the bell element to the document body
+     * @type {any}
+     */
     this.showBell = function () {
       var readyState = window.document.readyState;
       var attach = function() { window.document.body.appendChild(bell.element); };
@@ -246,7 +251,6 @@
           bell.uncollapse(bell.iconBadge);
         });
     }
-
 
     // Handle mouse events
     bell.iconContainer.addEventListener('mouseenter', function() {
