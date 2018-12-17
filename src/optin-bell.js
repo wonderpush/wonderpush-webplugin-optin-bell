@@ -1,6 +1,14 @@
 (function () {
   var _ = function(text) { return text; };
-
+  var makeTransitionPromise = function(elt) {
+    return new Promise(function(res, rej) {
+      var listener = function(event) {
+        elt.removeEventListener('transitionend', listener);
+        res();
+      };
+      elt.addEventListener('transitionend', listener);
+    });
+  };
   /**
    *
    * @param {object?} options
@@ -67,15 +75,6 @@
       elt.classList.add(definition.cls);
     }.bind(this));
 
-    var makeTransitionPromise = function(elt) {
-      return new Promise(function(res, rej) {
-        var listener = function(event) {
-          elt.removeEventListener('transitionend', listener);
-          res();
-        };
-        elt.addEventListener('transitionend', listener);
-      });
-    };
     // Instance methods
     this.isCollapsed = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
@@ -110,6 +109,23 @@
       return this.collapse(elt);
     }.bind(this);
 
+    this.deactivate = function() {
+      if (this.element.classList.contains('wonderpush-deactivated')) return;
+      this.element.classList.add('wonderpush-deactivated');
+      return makeTransitionPromise(this.element).then(function() {
+        this.element.classList.add('wonderpush-hidden');
+      }.bind(this));
+    }.bind(this);
+
+    this.activate = function() {
+      if (!this.element.classList.contains('wonderpush-deactivated')) return;
+      this.element.classList.remove('wonderpush-hidden');
+      setTimeout(function() {  // Needs setTimeout to be animated
+        this.element.classList.remove('wonderpush-deactivated');
+      }.bind(this), 0);
+      return makeTransitionPromise(this.element);
+    };
+
     // Configure a few things
     if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
     this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
@@ -136,6 +152,7 @@
   /**
    * @typedef {Object} OptinBell.Options
    * @property {external:WonderPushPluginSDK.TriggersConfig} [triggers] - The triggers configuration for this plugin.
+   * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
    * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
    * @property {String} [position] - Acceptable values are "left" or "right". Defaults to "left".
@@ -235,8 +252,6 @@
       }
     };
 
-    this.showBell();
-
     // Handle subscription state changes
     this.updateTexts();
     if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
@@ -252,12 +267,23 @@
         setTimeout(function() {
           bell.collapse(bell.paragraph);
           this.updateTexts();
+          // Activate the bell
+          if (options.hideWhenSubscribed) {
+            bell.activate();
+          }
         }.bind(this), 1200);
       }
       if (event.detail.state === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
         bell.paragraph.textContent = options.subscribedText || _('Thanks for subscribing!');
         bell.uncollapse(bell.paragraph);
+        // Set discrete after a while
         setTimeout(function() {
+          // Deactivate the bell
+          if (options.hideWhenSubscribed) {
+            bell.deactivate();
+            return;
+          }
+
           bell.element.classList.add('wonderpush-discrete');
           bell.collapse(bell.paragraph)
             .then(function() {
@@ -268,6 +294,10 @@
       if (event.detail.state === WonderPushSDK.SubscriptionState.DENIED) {
         bell.element.classList.remove('wonderpush-discrete');
         bell.uncollapse(bell.paragraph);
+        // Activate the bell
+        if (options.hideWhenSubscribed) {
+          bell.activate();
+        }
         setTimeout(function() {
           bell.collapse(bell.paragraph);
         }.bind(this), 1200);
@@ -357,6 +387,14 @@
         this.updateTexts();
       }
     }.bind(this));
+
+    this.showBell();
+    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+      bell.element.classList.add('wonderpush-hidden');
+      bell.element.classList.add('wonderpush-deactivated');
+    }
+
+
   }});
 
 })();

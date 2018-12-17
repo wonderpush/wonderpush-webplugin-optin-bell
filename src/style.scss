@@ -14,6 +14,9 @@ $notification-icon-size: 53px;
   transform: scale(1);
 }
 
+.wonderpush-hidden {
+  display: none !important;
+}
 .wonderpush-bell {
   z-index: 10000;
   font-size: 13px;
@@ -24,7 +27,11 @@ $notification-icon-size: 53px;
   justify-content: flex-start;
   align-items: center;
   height: $default-height;
-  transition: height $transition-duration ease-in;
+  transition: all $transition-duration * 0.5 ease-in;
+  transform-origin: center;
+  &.wonderpush-deactivated {
+    transform: scaleY(0);
+  }
 
   .wonderpush-collapsed {
     transform: scale(0) !important;
