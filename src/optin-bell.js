@@ -234,10 +234,18 @@
     }.bind(this));
     bell.iconContainer.addEventListener('click', function(event) {
       switch(WonderPushSDK.Notification.getSubscriptionState()) {
-        case WonderPushSDK.SubscriptionState.DENIED:
-          bell.uncollapse(bell.help);
-          bell.collapse(bell.paragraph);
-          bell.element.classList.remove('wonderpush-discrete');
+        case WonderPushSDK.SubscriptionState.DENIED: {
+          // Do not show help picture if the user is on another domain
+          // because performing help steps would allow notifications on the wrong domain
+          if (WonderPushSDK.isOnRightDomain()) {
+            bell.uncollapse(bell.help);
+            bell.collapse(bell.paragraph);
+            bell.element.classList.remove('wonderpush-discrete');
+          } else {
+            // TODO: uncomment me when the subscription popup has a better behavior and presents acceptable help to the user.
+            // WonderPushSDK.setNotificationEnabled(true, event);
+          }
+        }
           break;
         case WonderPushSDK.SubscriptionState.SUBSCRIBED:
         case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
