@@ -19,6 +19,7 @@ $notification-icon-size: 53px;
 }
 .wonderpush-bell {
   z-index: 10000;
+  color: #333;
   font-size: 13px;
   position: fixed;
   bottom: 20px;
@@ -31,6 +32,11 @@ $notification-icon-size: 53px;
   transform-origin: center;
   &.wonderpush-deactivated {
     transform: scaleY(0);
+  }
+
+  a {
+    color: $default-color !important;
+    text-decoration: none !important;
   }
 
   .wonderpush-collapsed {
@@ -287,7 +293,7 @@ $notification-icon-size: 53px;
       }
       .wonderpush-dialog-advanced-settings-fineprint {
         font-size: 10px;
-        opacity: 0.5;
+        color: #aaa;
       }
     }
   }

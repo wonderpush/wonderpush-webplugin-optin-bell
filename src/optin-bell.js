@@ -199,7 +199,11 @@
     if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
     this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
     this.dialogAdvancedSettingsDescription.textContent = options.advancedSettingsDescription || _('Your personal notification data:');
-    this.dialogAdvancedSettingsFineprint.textContent = options.advancedSettingsFineprint || _('WonderPush fully supports european GDPR');
+    if (options.advancedSettingsFineprint) {
+      this.dialogAdvancedSettingsFineprint.textContent = options.advancedSettingsFineprint;
+    } else {
+      this.dialogAdvancedSettingsFineprint.innerHTML = _('WonderPush fully supports european GDPR').replace('WonderPush', '<a href="https://www.wonderpush.com/">WonderPush</a>');
+    }
     this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
     this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
     this.dialogSettingsButton.addEventListener('click', function() { this.toggleCollapse(this.dialogAdvancedSettings); }.bind(this));
