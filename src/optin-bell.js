@@ -321,6 +321,17 @@
         }
       };
 
+      /**
+       * Makes sure the bell stays discrete when it should;
+       */
+      this.updateDiscretion = function() {
+        if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED &&
+          bell.isCollapsed(bell.dialog) &&
+          bell.isCollapsed(bell.help)) {
+          bell.element.classList.add('wonderpush-discrete');
+        }
+      }.bind(this);
+
       // Handle subscription state changes
       window.addEventListener('WonderPushEvent', function (event) {
         if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
@@ -394,6 +405,7 @@
         if (bell.isCollapsed(bell.dialog)) bell.uncollapse(bell.paragraph);
       });
       bell.iconContainer.addEventListener('mouseleave', function () {
+        this.updateDiscretion();
         bell.collapse(bell.paragraph)
           .then(function () {
             this.updateTexts();
@@ -437,8 +449,7 @@
         if (!bell.element.contains(event.srcElement)) {
           bell.collapse(bell.dialog);
           bell.collapse(bell.help);
-          if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) bell.element.classList.add('wonderpush-discrete');
-
+          this.updateDiscretion();
           this.updateTexts();
         }
       }.bind(this));
