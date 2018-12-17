@@ -56,7 +56,7 @@
           res();
         };
         elt.addEventListener('transitionend', listener);
-      })
+      });
     };
     // Instance methods
     this.collapse = function(prop) {
