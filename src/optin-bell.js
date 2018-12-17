@@ -173,8 +173,10 @@
     if (options.color) {
       bell.iconContainer.style.backgroundColor = options.color;
       bell.dialogButton.style.backgroundColor = options.color;
-      bell.dialogAdvancedSettingsClearButton.style.backgroundColor = options.color;
-      bell.dialogAdvancedSettingsDownloadButton.style.backgroundColor = options.color;
+      bell.dialogAdvancedSettingsClearButton.style.color = options.color;
+      bell.dialogAdvancedSettingsDownloadButton.style.color = options.color;
+      bell.dialogAdvancedSettingsClearButton.style.borderColor = options.color;
+      bell.dialogAdvancedSettingsDownloadButton.style.borderColor = options.color;
     }
     if (options.bellIcon) {
       bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';

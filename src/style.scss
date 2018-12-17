@@ -276,10 +276,6 @@ $notification-icon-size: 53px;
           font-size: 0.9em;
           border: 1px solid $default-color;
           text-transform: uppercase;
-          transition: all 0.25s ease-in-out;
-          &:hover {
-            background-color: lighten($default-color, 29);
-          }
         }
       }
       .wonderpush-dialog-advanced-settings-fineprint {
