@@ -1,4 +1,7 @@
 (function () {
+  if ((typeof window) === 'undefined') {
+    return;
+  }
   var document = window.document;
   var _ = function(text) { return text; };
 
