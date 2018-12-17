@@ -1,5 +1,18 @@
 (function () {
+
+  /**
+   * Translates the given text
+   * @param text
+   * @returns {*}
+   */
   var _ = function(text) { return text; };
+
+  /**
+   * Installs a one-time 'transitionend' handler on given element and returns a Promise
+   * that resolves when the handler is called.
+   * @param elt
+   * @returns {Promise<void>}
+   */
   var makeTransitionPromise = function(elt) {
     return new Promise(function(res, rej) {
       var listener = function(event) {
@@ -10,7 +23,7 @@
     });
   };
   /**
-   *
+   * A display object that builds the DOM and keep references to important nodes.
    * @param {object?} options
    * @param {string?} options.notificationIcon
    * @param {string?} options.dialogTitle
@@ -75,13 +88,23 @@
       elt.classList.add(definition.cls);
     }.bind(this));
 
-    // Instance methods
+    /**
+     * Is the given elt/prop collapsed ?
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Boolean}
+     */
     this.isCollapsed = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return false;
       return elt.classList.contains('wonderpush-collapsed');
     }.bind(this);
 
+    /**
+     * Collapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+     * Doesn't do anything and resolves immediately if bell already collapsed
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Promise}
+     */
     this.collapse = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
@@ -94,6 +117,12 @@
       return result;
     }.bind(this);
 
+    /**
+     * Uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+     * Doesn't do anything and resolves immediately if bell already uncollapsed
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Promise}
+     */
     this.uncollapse = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
@@ -102,6 +131,11 @@
       return makeTransitionPromise(elt);
     }.bind(this);
 
+    /**
+     * Collapse or uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Promise}
+     */
     this.toggleCollapse = function(prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
@@ -109,6 +143,12 @@
       return this.collapse(elt);
     }.bind(this);
 
+    /**
+     * Deactivate this bell. Returns a promise that resolves when the animation is complete.
+     * Doesn't do anything and resolves immediately if bell already deactivated
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Promise}
+     */
     this.deactivate = function() {
       if (this.element.classList.contains('wonderpush-deactivated')) return;
       this.element.classList.add('wonderpush-deactivated');
@@ -117,6 +157,12 @@
       }.bind(this));
     }.bind(this);
 
+    /**
+     * Activate this bell. Returns a promise that resolves when the animation is complete.
+     * Doesn't do anything and resolves immediately if bell already active
+     * @param {HTMLElement|string} Element of name of a property resolving to an element
+     * @return {Promise}
+     */
     this.activate = function() {
       if (!this.element.classList.contains('wonderpush-deactivated')) return;
       this.element.classList.remove('wonderpush-hidden');
