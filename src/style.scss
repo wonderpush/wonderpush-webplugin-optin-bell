@@ -14,6 +14,24 @@ $notification-icon-size: 53px;
   transform: scale(1);
 }
 
+@mixin bottom-arrow() {
+  &:before, &:after {
+    position: absolute;
+    top: 100%;
+    left: 11px;
+    border: 11px solid transparent;
+    border-top-color: white;
+    content: ' ';
+    width: 0;
+    height: 0;
+    box-sizing: border-box;
+  }
+  &:before {
+    border-width: 12px;
+    border-top-color: #ccc;
+  }
+}
+
 .wonderpush-hidden {
   display: none !important;
 }
@@ -140,17 +158,7 @@ $notification-icon-size: 53px;
     bottom: $default-height + 15;
     border-radius: 4px;
     box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    &:after {
-      position: absolute;
-      top: 100%;
-      left: 11px;
-      border: 11px solid transparent;
-      border-top-color: white;
-      content: ' ';
-      width: 0;
-      height: 0;
-      box-sizing: border-box;
-    }
+    @include bottom-arrow();
   }
 
   .wonderpush-dialog {
@@ -161,18 +169,8 @@ $notification-icon-size: 53px;
     border-radius: 4px;
     background: white;
     box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    @include bottom-arrow();
 
-    &:after {
-      position: absolute;
-      top: 100%;
-      left: 11px;
-      border: 11px solid transparent;
-      border-top-color: white;
-      content: ' ';
-      width: 0;
-      height: 0;
-      box-sizing: border-box;
-    }
 
     .wonderpush-dialog-title {
       color: #333;
