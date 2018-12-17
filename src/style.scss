@@ -5,7 +5,7 @@ $default-color: #ff6f61;
 $default-bell-color: #fff;
 $compact-width: 33px;
 $compact-height: 33px;
-$transition-duration: 0.25s;
+$transition-duration: 0.2s;
 $notification-icon-size: 53px;
 
 @mixin collapsible($transform-origin) {
@@ -27,7 +27,7 @@ $notification-icon-size: 53px;
   justify-content: flex-start;
   align-items: center;
   height: $default-height;
-  transition: all $transition-duration * 0.5 ease-in;
+  transition: all $transition-duration ease-in;
   transform-origin: center;
   &.wonderpush-deactivated {
     transform: scaleY(0);
