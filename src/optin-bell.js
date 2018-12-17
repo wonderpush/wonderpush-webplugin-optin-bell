@@ -133,6 +133,10 @@
     this.updateTexts = function() {
       var state = WonderPushSDK.Notification.getSubscriptionState();
       switch (state) {
+        case WonderPushSDK.SubscriptionState.DENIED:
+          bell.dialogButton.textContent = '';
+          bell.paragraph.textContent = _('You\'ve blocked notifications');
+          break;
         case WonderPushSDK.SubscriptionState.SUBSCRIBED:
           bell.dialogButton.textContent =_('Unsubscribe');
           bell.paragraph.textContent = _('You\'re subscribed to notifications');
@@ -180,6 +184,13 @@
             }.bind(this));
         }.bind(this), 1200);
       }
+      if (event.detail.state === WonderPushSDK.SubscriptionState.DENIED) {
+        bell.element.classList.remove('wonderpush-discrete');
+        bell.uncollapse(bell.paragraph);
+        setTimeout(function() {
+          bell.collapse(bell.paragraph);
+        }.bind(this), 1200);
+      }
     }.bind(this));
 
     // Handle clicks on button
@@ -223,6 +234,11 @@
     }.bind(this));
     bell.iconContainer.addEventListener('click', function(event) {
       switch(WonderPushSDK.Notification.getSubscriptionState()) {
+        case WonderPushSDK.SubscriptionState.DENIED:
+          bell.uncollapse(bell.help);
+          bell.collapse(bell.paragraph);
+          bell.element.classList.remove('wonderpush-discrete');
+          break;
         case WonderPushSDK.SubscriptionState.SUBSCRIBED:
         case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
           bell.uncollapse(bell.dialog);
@@ -239,6 +255,7 @@
     window.document.addEventListener('click', function(event) {
       if (!bell.element.contains(event.srcElement)) {
         bell.collapse(bell.dialog);
+        bell.collapse(bell.help);
         this.updateTexts();
       }
     }.bind(this));
