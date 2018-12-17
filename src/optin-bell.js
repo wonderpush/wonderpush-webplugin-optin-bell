@@ -3,7 +3,7 @@
   var translations = {
     "fr": {
       "Manage Notifications": "Gestion des notifications",
-      "Your personal notification data:": "Vos données personnelles de notification",
+      "Your personal notification data:": "Vos données personnelles de notification :",
       "WonderPush fully supports european GDPR": "WonderPush soutient pleinement la RGPD européenne",
       "Clear": "Effacer",
       "Download": "Télécharger",
