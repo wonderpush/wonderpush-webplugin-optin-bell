@@ -6,6 +6,8 @@
    * @param {object?} options
    * @param {string?} options.notificationIcon
    * @param {string?} options.dialogTitle
+   * @param {string?} options.advancedSettingsDescription
+   * @param {string?} options.advancedSettingsFineprint
    * @constructor
    * @class Bell
    * @property {HTMLElement} icon
@@ -17,6 +19,14 @@
    * @property {HTMLElement} dialogButton
    * @property {HTMLElement} notification
    * @property {HTMLElement} notificationIcon
+   * @property {HTMLElement} dialogButtonContainer
+   * @property {HTMLElement} dialogSettingsButton
+   * @property {HTMLElement} dialogAdvancedSettings
+   * @property {HTMLElement} dialogAdvancedSettingsDescription
+   * @property {HTMLElement} dialogAdvancedSettingsButtonContainer
+   * @property {HTMLElement} dialogAdvancedSettingsClearButton
+   * @property {HTMLElement} dialogAdvancedSettingsDownloadButton
+   * @property {HTMLElement} dialogAdvancedSettingsFineprint
    */
   function Bell(options) {
     options = options || {};
@@ -37,7 +47,15 @@
       { cls: 'wonderpush-notification-paragraph-medium', parent: 'notification'},
       { cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
       { cls: 'wonderpush-notification-paragraph-small', parent: 'notification'},
-      { cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialog'},
+      { cls: 'wonderpush-dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
+      { cls: 'wonderpush-dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
+      { cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
+      { cls: 'wonderpush-dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
+      { cls: 'wonderpush-dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
+      { cls: 'wonderpush-dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
+      { cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      { cls: 'wonderpush-dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      { cls: 'wonderpush-dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
     ];
 
     // Create the DOM
@@ -75,14 +93,27 @@
       return makeTransitionPromise(elt);
     }.bind(this);
 
+    this.toggleCollapse = function(prop) {
+      var elt = typeof prop === 'string' ? this[prop] : prop;
+      if (!elt) return;
+      if (elt.classList.contains('wonderpush-collapsed')) return this.uncollapse(elt);
+      return this.collapse(elt);
+    }.bind(this);
+
     // Configure a few things
     if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
     this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
+    this.dialogAdvancedSettingsDescription.textContent = options.advancedSettingsDescription || _('Your personal notification data:');
+    this.dialogAdvancedSettingsFineprint.textContent = options.advancedSettingsFineprint || _('WonderPush fully supports european GDPR');
+    this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
+    this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
+    this.dialogSettingsButton.addEventListener('click', function() { this.toggleCollapse(this.dialogAdvancedSettings); }.bind(this));
     this.iconBadge.textContent = '1';
     this.collapse('help');
     this.collapse('dialog');
     this.collapse('paragraph');
     this.collapse('iconBadge');
+    this.collapse('dialogAdvancedSettings');
   }
 
 
@@ -109,6 +140,8 @@
    * @property {String} [blockedText] - Text displayed when already users have blocked notifications. Defaults to "You've blocked notifications".
    * @property {String} [subscribedText] - Text displayed when users subscribe. Defaults to "Thanks for subscribing!".
    * @property {String} [unsubscribedText] - Text displayed when users unsubscribe. Defaults to "You won't receive more notifications".
+   * @property {String} [advancedSettingsDescription] - Text displayed above advanced settings. Defaults to "Your personal notification data:".
+   * @property {String} [advancedSettingsFineprint] - Text displayed below advanced settings. Defaults to "WonderPush fully supports european GDPR".
    * @property {Boolean} [showUnreadBadge] - When true, a badge with an unread count of "1" will be displayed the first time users see the bell. Defaults to true.
    */
   /**
@@ -128,12 +161,16 @@
     var bell = new Bell({
       notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
       dialogTitle: options.dialogTitle,
+      advancedSettingsDescription: options.advancedSettingsDescription,
+      advancedSettingsFineprint: options.advancedSettingsFineprint,
     });
     if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
     if (options.position === 'right') bell.element.classList.add('wonderpush-right');
     if (options.color) {
       bell.iconContainer.style.backgroundColor = options.color;
       bell.dialogButton.style.backgroundColor = options.color;
+      bell.dialogAdvancedSettingsClearButton.style.backgroundColor = options.color;
+      bell.dialogAdvancedSettingsDownloadButton.style.backgroundColor = options.color;
     }
     if (options.bellIcon) {
       bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
@@ -264,7 +301,8 @@
         }.bind(this));
     }.bind(this));
     bell.iconContainer.addEventListener('click', function(event) {
-      switch(WonderPushSDK.Notification.getSubscriptionState()) {
+      var state = WonderPushSDK.Notification.getSubscriptionState();
+      switch(state) {
         case WonderPushSDK.SubscriptionState.DENIED: {
           // Do not show help picture if the user is on another domain
           // because performing help steps would allow notifications on the wrong domain
@@ -280,6 +318,7 @@
           break;
         case WonderPushSDK.SubscriptionState.SUBSCRIBED:
         case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
+          bell.dialogSettingsButton.style.display = state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
           bell.uncollapse(bell.dialog);
           bell.collapse(bell.paragraph);
           bell.element.classList.remove('wonderpush-discrete');
