@@ -13,7 +13,6 @@
       "Subscribe": "Je m'abonne",
       "You are not receiving any notifications": "Vous ne recevez pas de notifications",
       "Loading": "Chargement",
-      "Subscribe": "Je m'abonne",
       "Click to subscribe to notifications": "Cliquez pour vous abonner aux notifications",
       "You won't receive more notifications": "Vous ne recevrez plus de notifications",
       "Thanks for subscribing!": "Merci de vous être abonné !"
@@ -457,8 +456,7 @@
       bell.element.classList.add('wonderpush-discrete');
     }
     // Deactivated
-    if (options.hideWhenSubscribed
-      && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+    if (options.hideWhenSubscribed && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
       bell.element.classList.add('wonderpush-hidden');
       bell.element.classList.add('wonderpush-deactivated');
     }
