@@ -245,6 +245,8 @@
     window.addEventListener('WonderPushEvent', function(event) {
       if (!event.detail || !event.detail.state || event.detail.name !== 'subscription') return;
       this.updateTexts();
+      bell.collapse(bell.dialog);
+      bell.collapse(bell.help);
       if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
         bell.paragraph.textContent = options.unsubscribedText || _('You won\'t receive more notifications');
         setTimeout(function() {
