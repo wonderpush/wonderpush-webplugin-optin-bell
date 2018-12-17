@@ -389,7 +389,8 @@
     }.bind(this));
 
     this.showBell();
-    if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
+    if (options.hideWhenSubscribed
+      && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
       bell.element.classList.add('wonderpush-hidden');
       bell.element.classList.add('wonderpush-deactivated');
     }
