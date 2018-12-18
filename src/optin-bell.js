@@ -18,6 +18,7 @@
       "Thanks for subscribing!": "Merci de vous être abonné !"
     }
   };
+  var cssPrefix = 'wonderpush-';
 
   /**
    * Translates the given text
@@ -76,31 +77,31 @@
   function Bell(options) {
     options = options || {};
     this.element = window.document.createElement('div');
-    this.element.classList.add('wonderpush-bell');
+    this.element.classList.add(cssPrefix + 'bell');
 
     var definitions = [
-      {cls: 'wonderpush-icon-container', name: 'iconContainer'},
-      {cls: 'wonderpush-icon', name: 'icon', parent: 'iconContainer'},
-      {cls: 'wonderpush-icon-badge', name: 'iconBadge', parent: 'iconContainer'},
-      {cls: 'wonderpush-paragraph', name: 'paragraph'},
-      {cls: 'wonderpush-help', name: 'help'},
-      {cls: 'wonderpush-dialog', name: 'dialog'},
-      {cls: 'wonderpush-dialog-title', name: 'dialogTitle', parent: 'dialog'},
-      {cls: 'wonderpush-notification', name: 'notification', parent: 'dialog'},
-      {cls: 'wonderpush-notification-icon', name: 'notificationIcon', parent: 'notification'},
-      {cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
-      {cls: 'wonderpush-notification-paragraph-medium', parent: 'notification'},
-      {cls: 'wonderpush-notification-paragraph-large', parent: 'notification'},
-      {cls: 'wonderpush-notification-paragraph-small', parent: 'notification'},
-      {cls: 'wonderpush-dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
-      {cls: 'wonderpush-dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
-      {cls: 'wonderpush-dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
-      {cls: 'wonderpush-dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
-      {cls: 'wonderpush-dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
-      {cls: 'wonderpush-dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
-      {cls: 'wonderpush-dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      {cls: 'wonderpush-dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      {cls: 'wonderpush-dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
+      {cls: 'icon-container', name: 'iconContainer'},
+      {cls: 'icon', name: 'icon', parent: 'iconContainer'},
+      {cls: 'icon-badge', name: 'iconBadge', parent: 'iconContainer'},
+      {cls: 'paragraph', name: 'paragraph'},
+      {cls: 'help', name: 'help'},
+      {cls: 'dialog', name: 'dialog'},
+      {cls: 'dialog-title', name: 'dialogTitle', parent: 'dialog'},
+      {cls: 'notification', name: 'notification', parent: 'dialog'},
+      {cls: 'notification-icon', name: 'notificationIcon', parent: 'notification'},
+      {cls: 'notification-paragraph-large', parent: 'notification'},
+      {cls: 'notification-paragraph-medium', parent: 'notification'},
+      {cls: 'notification-paragraph-large', parent: 'notification'},
+      {cls: 'notification-paragraph-small', parent: 'notification'},
+      {cls: 'dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
+      {cls: 'dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
+      {cls: 'dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
+      {cls: 'dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
+      {cls: 'dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
+      {cls: 'dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
+      {cls: 'dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      {cls: 'dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+      {cls: 'dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
     ];
 
     // Create the DOM
@@ -109,7 +110,7 @@
       if (definition.name) this[definition.name] = elt;
       var parent = this[definition.parent || 'element'];
       parent.appendChild(elt);
-      elt.classList.add(definition.cls);
+      elt.classList.add(cssPrefix + definition.cls);
     }.bind(this));
 
     /**
@@ -120,7 +121,7 @@
     this.isCollapsed = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return false;
-      return elt.classList.contains('wonderpush-collapsed');
+      return elt.classList.contains(cssPrefix + 'collapsed');
     }.bind(this);
 
     /**
@@ -132,8 +133,8 @@
     this.collapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
-      if (elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
-      elt.classList.add('wonderpush-collapsed');
+      if (elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
+      elt.classList.add(cssPrefix + 'collapsed');
       var result = makeTransitionPromise(elt);
       if (elt === this.dialog) {
         result.then(function () {
@@ -152,8 +153,8 @@
     this.uncollapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
-      if (!elt.classList.contains('wonderpush-collapsed')) return Promise.resolve();
-      elt.classList.remove('wonderpush-collapsed');
+      if (!elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
+      elt.classList.remove(cssPrefix + 'collapsed');
       return makeTransitionPromise(elt);
     }.bind(this);
 
@@ -165,7 +166,7 @@
     this.toggleCollapse = function (prop) {
       var elt = typeof prop === 'string' ? this[prop] : prop;
       if (!elt) return;
-      if (elt.classList.contains('wonderpush-collapsed')) return this.uncollapse(elt);
+      if (elt.classList.contains(cssPrefix + 'collapsed')) return this.uncollapse(elt);
       return this.collapse(elt);
     }.bind(this);
 
@@ -176,10 +177,10 @@
      * @return {Promise}
      */
     this.deactivate = function () {
-      if (this.element.classList.contains('wonderpush-deactivated')) return;
-      this.element.classList.add('wonderpush-deactivated');
+      if (this.element.classList.contains(cssPrefix + 'deactivated')) return;
+      this.element.classList.add(cssPrefix + 'deactivated');
       return makeTransitionPromise(this.element).then(function () {
-        this.element.classList.add('wonderpush-hidden');
+        this.element.classList.add(cssPrefix + 'hidden');
       }.bind(this));
     }.bind(this);
 
@@ -190,10 +191,10 @@
      * @return {Promise}
      */
     this.activate = function () {
-      if (!this.element.classList.contains('wonderpush-deactivated')) return;
-      this.element.classList.remove('wonderpush-hidden');
+      if (!this.element.classList.contains(cssPrefix + 'deactivated')) return;
+      this.element.classList.remove(cssPrefix + 'hidden');
       setTimeout(function () {  // Needs setTimeout to be animated
-        this.element.classList.remove('wonderpush-deactivated');
+        this.element.classList.remove(cssPrefix + 'deactivated');
       }.bind(this), 0);
       return makeTransitionPromise(this.element);
     };
@@ -232,6 +233,7 @@
    * @property {String} [language] - The language code. We currently support 'en' and 'fr'. Defaults to the browser language.
    * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
+   * @property {String} [cssPrefix] - A prefix to be used in front of all CSS classes. Use this to reset our styles and put your own. Defaults to 'wonderpush-'.
    * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
    * @property {String} [position] - Acceptable values are "left" or "right". Defaults to "left".
    * @property {String} [bellIcon] - URL of the bell icon.
@@ -263,6 +265,7 @@
   WonderPush.registerPlugin("optin-bell", {
     window: function OptinBell(WonderPushSDK, options) {
       options = options || {};
+      if (options.cssPrefix) cssPrefix = options.cssPrefix;
       WonderPushSDK.loadStylesheet('style.css');
       var bell = new Bell({
         notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
@@ -327,7 +330,7 @@
         if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED &&
           bell.isCollapsed(bell.dialog) &&
           bell.isCollapsed(bell.help)) {
-          bell.element.classList.add('wonderpush-discrete');
+          bell.element.classList.add(cssPrefix + 'discrete');
         }
       }.bind(this);
 
@@ -360,7 +363,7 @@
               return;
             }
 
-            bell.element.classList.add('wonderpush-discrete');
+            bell.element.classList.add(cssPrefix + 'discrete');
             bell.collapse(bell.paragraph)
               .then(function () {
                 this.updateTexts();
@@ -368,7 +371,7 @@
           }.bind(this), 1200);
         }
         if (event.detail.state === WonderPushSDK.SubscriptionState.DENIED) {
-          bell.element.classList.remove('wonderpush-discrete');
+          bell.element.classList.remove(cssPrefix + 'discrete');
           bell.uncollapse(bell.paragraph);
           // Activate the bell
           if (options.hideWhenSubscribed) {
@@ -444,7 +447,7 @@
             if (WonderPushSDK.isOnRightDomain()) {
               bell.uncollapse(bell.help);
               bell.collapse(bell.paragraph);
-              bell.element.classList.remove('wonderpush-discrete');
+              bell.element.classList.remove(cssPrefix + 'discrete');
             } else {
               // TODO: uncomment me when the subscription popup has a better behavior and presents acceptable help to the user.
               // WonderPushSDK.setNotificationEnabled(true, event);
@@ -456,7 +459,7 @@
             bell.dialogSettingsButton.style.display = state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
             bell.uncollapse(bell.dialog);
             bell.collapse(bell.paragraph);
-            bell.element.classList.remove('wonderpush-discrete');
+            bell.element.classList.remove(cssPrefix + 'discrete');
             break;
           case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
             // Subscribe
@@ -478,7 +481,7 @@
 
       // Options
       if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
-      if (options.position === 'right') bell.element.classList.add('wonderpush-right');
+      if (options.position === 'right') bell.element.classList.add(cssPrefix + 'right');
       if (options.color) {
         bell.iconContainer.style.backgroundColor = options.color;
         bell.dialogButton.style.backgroundColor = options.color;
@@ -496,12 +499,12 @@
       this.updateTexts();
       // Discrete
       if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-        bell.element.classList.add('wonderpush-discrete');
+        bell.element.classList.add(cssPrefix + 'discrete');
       }
       // Deactivated
       if (options.hideWhenSubscribed && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
-        bell.element.classList.add('wonderpush-hidden');
-        bell.element.classList.add('wonderpush-deactivated');
+        bell.element.classList.add(cssPrefix + 'hidden');
+        bell.element.classList.add(cssPrefix + 'deactivated');
       }
       // Unread badge
       if (!options.hasOwnProperty('showBadge') || options.showBadge) {
