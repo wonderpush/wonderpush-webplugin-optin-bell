@@ -338,6 +338,7 @@
         this.updateTexts();
         bell.collapse(bell.dialog);
         bell.collapse(bell.help);
+        bell.collapse(bell.iconBadge);
         if (event.detail.state === WonderPushSDK.SubscriptionState.UNSUBSCRIBED) {
           bell.paragraph.textContent = options.unsubscribedText || _('You won\'t receive more notifications');
           setTimeout(function () {
@@ -380,7 +381,7 @@
         }
       }.bind(this));
 
-      // Handle clicks on button
+      // (Un)subscribe button
       bell.dialogButton.addEventListener('click', function (event) {
         switch (WonderPushSDK.Notification.getSubscriptionState()) {
           case WonderPushSDK.SubscriptionState.SUBSCRIBED:
@@ -399,6 +400,26 @@
         }
       });
 
+      // Download data button
+      bell.dialogAdvancedSettingsDownloadButton.addEventListener('click', function (event) {
+        WonderPushSDK.Data.downloadExport();
+      });
+
+      // Clear data button
+      bell.dialogAdvancedSettingsClearButton.addEventListener('click', function (event) {
+        if (window.confirm(_('This action will clear all the data used to send you targeted push notifications. Are you sure ?'))) {
+          bell.collapse(bell.dialog);
+          WonderPushSDK.Data.clearAll()
+            .then(function () {
+              bell.paragraph.textContent = _('Data successfully cleared');
+              bell.uncollapse(bell.paragraph);
+              setTimeout(function() {
+                bell.collapse(bell.paragraph);
+                this.updateTexts();
+              }.bind(this), 1200);
+            }.bind(this));
+        }
+      }.bind(this));
       // Handle mouse events
       bell.iconContainer.addEventListener('mouseenter', function () {
         bell.collapse(bell.iconBadge);
