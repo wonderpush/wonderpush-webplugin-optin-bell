@@ -500,6 +500,7 @@
       // Discrete
       if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
         bell.element.classList.add(cssPrefix + 'discrete');
+        bell.collapse(bell.iconBadge);
       }
       // Deactivated
       if (options.hideWhenSubscribed && WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.SUBSCRIBED) {
