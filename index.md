@@ -10,10 +10,12 @@ It appears on the bottom-left edge of the page and does not scroll with the page
 
 # How to use this plugin
 
+<!--
 ## From the WonderPush dashboard
 
 Log in to your [WonderPush dashboard](https://dashboard.wonderpush.com/) and head over to the _Settings / Configuration_ page in the left menu.
 Select the _Website_ tab and use this plugin.
+-->
 
 ## From the initialization options of the SDK
 
