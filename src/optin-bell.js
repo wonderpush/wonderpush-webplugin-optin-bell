@@ -229,7 +229,6 @@
    */
   /**
    * @typedef {Object} OptinBell.Options
-   * @property {external:WonderPushPluginSDK.TriggersConfig} [triggers] - The triggers configuration for this plugin.
    * @property {String} [language] - The language code. We currently support 'en' and 'fr'. Defaults to the browser language.
    * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
