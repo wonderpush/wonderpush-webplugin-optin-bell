@@ -248,7 +248,7 @@
    * @property {String} [unsubscribedText] - Text displayed when users unsubscribe. Defaults to "You won't receive more notifications".
    * @property {String} [advancedSettingsDescription] - Text displayed above advanced settings. Defaults to "Your personal notification data:".
    * @property {String} [advancedSettingsFineprint] - Text displayed below advanced settings. Defaults to "WonderPush fully supports european GDPR".
-   * @property {Boolean} [showUnreadBadge] - When true, a badge with an unread count of "1" will be displayed the first time users see the bell. Defaults to true.
+   * @property {Boolean} [showBadge] - When true, a badge with an unread count of "1" will be displayed the first time users see the bell. Defaults to true.
    */
   /**
    * The WonderPush JavaScript SDK instance.
@@ -484,7 +484,7 @@
         bell.element.classList.add('wonderpush-deactivated');
       }
       // Unread badge
-      if (!options.hasOwnProperty('showUnreadBadge') || options.showUnreadBadge) {
+      if (!options.hasOwnProperty('showBadge') || options.showBadge) {
         WonderPushSDK.Storage.get('badgeShown')
           .then(function (result) {
             if (result.badgeShown) return;
