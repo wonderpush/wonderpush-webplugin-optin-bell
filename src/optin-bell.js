@@ -1,227 +1,5 @@
 (function () {
 
-  var translations = {
-    "fr": {
-      "Manage Notifications": "Gestion des notifications",
-      "Your personal notification data:": "Vos données personnelles de notification :",
-      "WonderPush fully supports european GDPR": "WonderPush soutient pleinement la RGPD européenne",
-      "Clear": "Effacer",
-      "Download": "Télécharger",
-      "You've blocked notifications": "Vous avez bloqué les notifications",
-      "Unsubscribe": "Désinscription",
-      "You're subscribed to notifications": "Vous êtes abonné aux notifications",
-      "Subscribe": "Je m'abonne",
-      "You are not receiving any notifications": "Vous ne recevez pas de notifications",
-      "Loading": "Chargement",
-      "Click to subscribe to notifications": "Cliquez pour vous abonner aux notifications",
-      "You won't receive more notifications": "Vous ne recevrez plus de notifications",
-      "Thanks for subscribing!": "Merci de vous être abonné !"
-    }
-  };
-  var cssPrefix = 'wonderpush-';
-
-  /**
-   * Translates the given text
-   * @param text
-   * @returns {*}
-   */
-  var _ = function (text) {
-    var language = (navigator.language || '').split('-')[0];
-    if (translations.hasOwnProperty(language) && translations[language][text]) return translations[language][text];
-    return text;
-  };
-
-  /**
-   * Installs a one-time 'transitionend' handler on given element and returns a Promise
-   * that resolves when the handler is called.
-   * @param elt
-   * @returns {Promise<void>}
-   */
-  var makeTransitionPromise = function (elt) {
-    return new Promise(function (res, rej) {
-      var listener = function (event) {
-        elt.removeEventListener('transitionend', listener);
-        res();
-      };
-      elt.addEventListener('transitionend', listener);
-    });
-  };
-
-  /**
-   * A display object that builds the DOM and keep references to important nodes.
-   * @param {object?} options
-   * @param {string?} options.notificationIcon
-   * @param {string?} options.dialogTitle
-   * @param {string?} options.advancedSettingsDescription
-   * @param {string?} options.advancedSettingsFineprint
-   * @constructor
-   * @class Bell
-   * @property {HTMLElement} icon
-   * @property {HTMLElement} iconContainer
-   * @property {HTMLElement} iconBadge
-   * @property {HTMLElement} paragraph
-   * @property {HTMLElement} help
-   * @property {HTMLElement} dialog
-   * @property {HTMLElement} dialogButton
-   * @property {HTMLElement} notification
-   * @property {HTMLElement} notificationIcon
-   * @property {HTMLElement} dialogButtonContainer
-   * @property {HTMLElement} dialogSettingsButton
-   * @property {HTMLElement} dialogAdvancedSettings
-   * @property {HTMLElement} dialogAdvancedSettingsDescription
-   * @property {HTMLElement} dialogAdvancedSettingsButtonContainer
-   * @property {HTMLElement} dialogAdvancedSettingsClearButton
-   * @property {HTMLElement} dialogAdvancedSettingsDownloadButton
-   * @property {HTMLElement} dialogAdvancedSettingsFineprint
-   */
-  function Bell(options) {
-    options = options || {};
-    this.element = window.document.createElement('div');
-    this.element.classList.add(cssPrefix + 'bell');
-
-    var definitions = [
-      {cls: 'icon-container', name: 'iconContainer'},
-      {cls: 'icon', name: 'icon', parent: 'iconContainer'},
-      {cls: 'icon-badge', name: 'iconBadge', parent: 'iconContainer'},
-      {cls: 'paragraph', name: 'paragraph'},
-      {cls: 'help', name: 'help'},
-      {cls: 'dialog', name: 'dialog'},
-      {cls: 'dialog-title', name: 'dialogTitle', parent: 'dialog'},
-      {cls: 'notification', name: 'notification', parent: 'dialog'},
-      {cls: 'notification-icon', name: 'notificationIcon', parent: 'notification'},
-      {cls: 'notification-paragraph-large', parent: 'notification'},
-      {cls: 'notification-paragraph-medium', parent: 'notification'},
-      {cls: 'notification-paragraph-large', parent: 'notification'},
-      {cls: 'notification-paragraph-small', parent: 'notification'},
-      {cls: 'dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
-      {cls: 'dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
-      {cls: 'dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
-      {cls: 'dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
-      {cls: 'dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
-      {cls: 'dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
-      {cls: 'dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      {cls: 'dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
-      {cls: 'dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
-    ];
-
-    // Create the DOM
-    definitions.forEach(function (definition) {
-      var elt = window.document.createElement('div');
-      if (definition.name) this[definition.name] = elt;
-      var parent = this[definition.parent || 'element'];
-      parent.appendChild(elt);
-      elt.classList.add(cssPrefix + definition.cls);
-    }.bind(this));
-
-    /**
-     * Is the given elt/prop collapsed ?
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Boolean}
-     */
-    this.isCollapsed = function (prop) {
-      var elt = typeof prop === 'string' ? this[prop] : prop;
-      if (!elt) return false;
-      return elt.classList.contains(cssPrefix + 'collapsed');
-    }.bind(this);
-
-    /**
-     * Collapse the given elt/prop. Returns a promise that resolves when the animation is complete.
-     * Doesn't do anything and resolves immediately if bell already collapsed
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Promise}
-     */
-    this.collapse = function (prop) {
-      var elt = typeof prop === 'string' ? this[prop] : prop;
-      if (!elt) return;
-      if (elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
-      elt.classList.add(cssPrefix + 'collapsed');
-      var result = makeTransitionPromise(elt);
-      if (elt === this.dialog) {
-        result.then(function () {
-          this.collapse(this.dialogAdvancedSettings);
-        }.bind(this));
-      }
-      return result;
-    }.bind(this);
-
-    /**
-     * Uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
-     * Doesn't do anything and resolves immediately if bell already uncollapsed
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Promise}
-     */
-    this.uncollapse = function (prop) {
-      var elt = typeof prop === 'string' ? this[prop] : prop;
-      if (!elt) return;
-      if (!elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
-      elt.classList.remove(cssPrefix + 'collapsed');
-      return makeTransitionPromise(elt);
-    }.bind(this);
-
-    /**
-     * Collapse or uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Promise}
-     */
-    this.toggleCollapse = function (prop) {
-      var elt = typeof prop === 'string' ? this[prop] : prop;
-      if (!elt) return;
-      if (elt.classList.contains(cssPrefix + 'collapsed')) return this.uncollapse(elt);
-      return this.collapse(elt);
-    }.bind(this);
-
-    /**
-     * Deactivate this bell. Returns a promise that resolves when the animation is complete.
-     * Doesn't do anything and resolves immediately if bell already deactivated
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Promise}
-     */
-    this.deactivate = function () {
-      if (this.element.classList.contains(cssPrefix + 'deactivated')) return;
-      this.element.classList.add(cssPrefix + 'deactivated');
-      return makeTransitionPromise(this.element).then(function () {
-        this.element.classList.add(cssPrefix + 'hidden');
-      }.bind(this));
-    }.bind(this);
-
-    /**
-     * Activate this bell. Returns a promise that resolves when the animation is complete.
-     * Doesn't do anything and resolves immediately if bell already active
-     * @param {HTMLElement|string} Element of name of a property resolving to an element
-     * @return {Promise}
-     */
-    this.activate = function () {
-      if (!this.element.classList.contains(cssPrefix + 'deactivated')) return;
-      this.element.classList.remove(cssPrefix + 'hidden');
-      setTimeout(function () {  // Needs setTimeout to be animated
-        this.element.classList.remove(cssPrefix + 'deactivated');
-      }.bind(this), 0);
-      return makeTransitionPromise(this.element);
-    };
-
-    // Configure a few things
-    if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
-    this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
-    this.dialogAdvancedSettingsDescription.textContent = options.advancedSettingsDescription || _('Your personal notification data:');
-    if (options.advancedSettingsFineprint) {
-      this.dialogAdvancedSettingsFineprint.textContent = options.advancedSettingsFineprint;
-    } else {
-      this.dialogAdvancedSettingsFineprint.innerHTML = _('WonderPush fully supports european GDPR').replace('WonderPush', '<a href="https://www.wonderpush.com/">WonderPush</a>');
-    }
-    this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
-    this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
-    this.dialogSettingsButton.addEventListener('click', function () {
-      this.toggleCollapse(this.dialogAdvancedSettings);
-    }.bind(this));
-    this.iconBadge.textContent = '1';
-    this.collapse('help');
-    this.collapse('dialog');
-    this.collapse('paragraph');
-    this.collapse('iconBadge');
-    this.collapse('dialogAdvancedSettings');
-  }
-
-
   /**
    * WonderPush Web SDK plugin to present the user an opt-in bell before prompting her for push permission.
    * @class OptinBell
@@ -264,6 +42,227 @@
    */
   WonderPush.registerPlugin("optin-bell", {
     window: function OptinBell(WonderPushSDK, options) {
+      var translations = {
+        "fr": {
+          "Manage Notifications": "Gestion des notifications",
+          "Your personal notification data:": "Vos données personnelles de notification :",
+          "WonderPush fully supports european GDPR": "WonderPush soutient pleinement la RGPD européenne",
+          "Clear": "Effacer",
+          "Download": "Télécharger",
+          "You've blocked notifications": "Vous avez bloqué les notifications",
+          "Unsubscribe": "Désinscription",
+          "You're subscribed to notifications": "Vous êtes abonné aux notifications",
+          "Subscribe": "Je m'abonne",
+          "You are not receiving any notifications": "Vous ne recevez pas de notifications",
+          "Loading": "Chargement",
+          "Click to subscribe to notifications": "Cliquez pour vous abonner aux notifications",
+          "You won't receive more notifications": "Vous ne recevrez plus de notifications",
+          "Thanks for subscribing!": "Merci de vous être abonné !"
+        }
+      };
+      var cssPrefix = 'wonderpush-';
+
+      /**
+       * Translates the given text
+       * @param text
+       * @returns {*}
+       */
+      var _ = function (text) {
+        var language = (navigator.language || '').split('-')[0];
+        if (translations.hasOwnProperty(language) && translations[language][text]) return translations[language][text];
+        return text;
+      };
+
+      /**
+       * Installs a one-time 'transitionend' handler on given element and returns a Promise
+       * that resolves when the handler is called.
+       * @param elt
+       * @returns {Promise<void>}
+       */
+      var makeTransitionPromise = function (elt) {
+        return new Promise(function (res, rej) {
+          var listener = function (event) {
+            elt.removeEventListener('transitionend', listener);
+            res();
+          };
+          elt.addEventListener('transitionend', listener);
+        });
+      };
+
+      /**
+       * A display object that builds the DOM and keep references to important nodes.
+       * @param {object?} options
+       * @param {string?} options.notificationIcon
+       * @param {string?} options.dialogTitle
+       * @param {string?} options.advancedSettingsDescription
+       * @param {string?} options.advancedSettingsFineprint
+       * @constructor
+       * @class Bell
+       * @property {HTMLElement} icon
+       * @property {HTMLElement} iconContainer
+       * @property {HTMLElement} iconBadge
+       * @property {HTMLElement} paragraph
+       * @property {HTMLElement} help
+       * @property {HTMLElement} dialog
+       * @property {HTMLElement} dialogButton
+       * @property {HTMLElement} notification
+       * @property {HTMLElement} notificationIcon
+       * @property {HTMLElement} dialogButtonContainer
+       * @property {HTMLElement} dialogSettingsButton
+       * @property {HTMLElement} dialogAdvancedSettings
+       * @property {HTMLElement} dialogAdvancedSettingsDescription
+       * @property {HTMLElement} dialogAdvancedSettingsButtonContainer
+       * @property {HTMLElement} dialogAdvancedSettingsClearButton
+       * @property {HTMLElement} dialogAdvancedSettingsDownloadButton
+       * @property {HTMLElement} dialogAdvancedSettingsFineprint
+       */
+      function Bell(options) {
+        options = options || {};
+        this.element = window.document.createElement('div');
+        this.element.classList.add(cssPrefix + 'bell');
+
+        var definitions = [
+          {cls: 'icon-container', name: 'iconContainer'},
+          {cls: 'icon', name: 'icon', parent: 'iconContainer'},
+          {cls: 'icon-badge', name: 'iconBadge', parent: 'iconContainer'},
+          {cls: 'paragraph', name: 'paragraph'},
+          {cls: 'help', name: 'help'},
+          {cls: 'dialog', name: 'dialog'},
+          {cls: 'dialog-title', name: 'dialogTitle', parent: 'dialog'},
+          {cls: 'notification', name: 'notification', parent: 'dialog'},
+          {cls: 'notification-icon', name: 'notificationIcon', parent: 'notification'},
+          {cls: 'notification-paragraph-large', parent: 'notification'},
+          {cls: 'notification-paragraph-medium', parent: 'notification'},
+          {cls: 'notification-paragraph-large', parent: 'notification'},
+          {cls: 'notification-paragraph-small', parent: 'notification'},
+          {cls: 'dialog-button-container', name: 'dialogButtonContainer', parent: 'dialog'},
+          {cls: 'dialog-settings-button', name: 'dialogSettingsButton', parent: 'dialogButtonContainer'},
+          {cls: 'dialog-button', name: 'dialogButton', parent: 'dialogButtonContainer'},
+          {cls: 'dialog-advanced-settings', name: 'dialogAdvancedSettings', parent: 'dialog'},
+          {cls: 'dialog-advanced-settings-description', name: 'dialogAdvancedSettingsDescription', parent: 'dialogAdvancedSettings'},
+          {cls: 'dialog-advanced-settings-button-container', name: 'dialogAdvancedSettingsButtonContainer', parent: 'dialogAdvancedSettings'},
+          {cls: 'dialog-advanced-settings-download-button', name: 'dialogAdvancedSettingsDownloadButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+          {cls: 'dialog-advanced-settings-clear-button', name: 'dialogAdvancedSettingsClearButton', parent: 'dialogAdvancedSettingsButtonContainer'},
+          {cls: 'dialog-advanced-settings-fineprint', name: 'dialogAdvancedSettingsFineprint', parent: 'dialogAdvancedSettings'},
+        ];
+
+        // Create the DOM
+        definitions.forEach(function (definition) {
+          var elt = window.document.createElement('div');
+          if (definition.name) this[definition.name] = elt;
+          var parent = this[definition.parent || 'element'];
+          parent.appendChild(elt);
+          elt.classList.add(cssPrefix + definition.cls);
+        }.bind(this));
+
+        /**
+         * Is the given elt/prop collapsed ?
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Boolean}
+         */
+        this.isCollapsed = function (prop) {
+          var elt = typeof prop === 'string' ? this[prop] : prop;
+          if (!elt) return false;
+          return elt.classList.contains(cssPrefix + 'collapsed');
+        }.bind(this);
+
+        /**
+         * Collapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+         * Doesn't do anything and resolves immediately if bell already collapsed
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Promise}
+         */
+        this.collapse = function (prop) {
+          var elt = typeof prop === 'string' ? this[prop] : prop;
+          if (!elt) return;
+          if (elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
+          elt.classList.add(cssPrefix + 'collapsed');
+          var result = makeTransitionPromise(elt);
+          if (elt === this.dialog) {
+            result.then(function () {
+              this.collapse(this.dialogAdvancedSettings);
+            }.bind(this));
+          }
+          return result;
+        }.bind(this);
+
+        /**
+         * Uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+         * Doesn't do anything and resolves immediately if bell already uncollapsed
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Promise}
+         */
+        this.uncollapse = function (prop) {
+          var elt = typeof prop === 'string' ? this[prop] : prop;
+          if (!elt) return;
+          if (!elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
+          elt.classList.remove(cssPrefix + 'collapsed');
+          return makeTransitionPromise(elt);
+        }.bind(this);
+
+        /**
+         * Collapse or uncollapse the given elt/prop. Returns a promise that resolves when the animation is complete.
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Promise}
+         */
+        this.toggleCollapse = function (prop) {
+          var elt = typeof prop === 'string' ? this[prop] : prop;
+          if (!elt) return;
+          if (elt.classList.contains(cssPrefix + 'collapsed')) return this.uncollapse(elt);
+          return this.collapse(elt);
+        }.bind(this);
+
+        /**
+         * Deactivate this bell. Returns a promise that resolves when the animation is complete.
+         * Doesn't do anything and resolves immediately if bell already deactivated
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Promise}
+         */
+        this.deactivate = function () {
+          if (this.element.classList.contains(cssPrefix + 'deactivated')) return;
+          this.element.classList.add(cssPrefix + 'deactivated');
+          return makeTransitionPromise(this.element).then(function () {
+            this.element.classList.add(cssPrefix + 'hidden');
+          }.bind(this));
+        }.bind(this);
+
+        /**
+         * Activate this bell. Returns a promise that resolves when the animation is complete.
+         * Doesn't do anything and resolves immediately if bell already active
+         * @param {HTMLElement|string} Element of name of a property resolving to an element
+         * @return {Promise}
+         */
+        this.activate = function () {
+          if (!this.element.classList.contains(cssPrefix + 'deactivated')) return;
+          this.element.classList.remove(cssPrefix + 'hidden');
+          setTimeout(function () {  // Needs setTimeout to be animated
+            this.element.classList.remove(cssPrefix + 'deactivated');
+          }.bind(this), 0);
+          return makeTransitionPromise(this.element);
+        };
+
+        // Configure a few things
+        if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
+        this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
+        this.dialogAdvancedSettingsDescription.textContent = options.advancedSettingsDescription || _('Your personal notification data:');
+        if (options.advancedSettingsFineprint) {
+          this.dialogAdvancedSettingsFineprint.textContent = options.advancedSettingsFineprint;
+        } else {
+          this.dialogAdvancedSettingsFineprint.innerHTML = _('WonderPush fully supports european GDPR').replace('WonderPush', '<a href="https://www.wonderpush.com/">WonderPush</a>');
+        }
+        this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
+        this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
+        this.dialogSettingsButton.addEventListener('click', function () {
+          this.toggleCollapse(this.dialogAdvancedSettings);
+        }.bind(this));
+        this.iconBadge.textContent = '1';
+        this.collapse('help');
+        this.collapse('dialog');
+        this.collapse('paragraph');
+        this.collapse('iconBadge');
+        this.collapse('dialogAdvancedSettings');
+      }
+
       options = options || {};
       if (options.cssPrefix) cssPrefix = options.cssPrefix;
       WonderPushSDK.loadStylesheet('style.css');
