@@ -314,6 +314,7 @@ $notification-icon-size: 53px;
       @include collapsible(right);
       margin-left: unset;
       margin-right: 12px;
+      pointer-events: none; // Ignore mouse events, click-through
       &:after {
         position: absolute;
         right: unset;
