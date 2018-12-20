@@ -83,9 +83,11 @@
         return new Promise(function (res, rej) {
           var listener = function (event) {
             elt.removeEventListener('transitionend', listener);
+            elt.removeEventListener('transitioncancel', listener);
             res();
           };
           elt.addEventListener('transitionend', listener);
+          elt.addEventListener('transitioncancel', listener);
         });
       };
 
