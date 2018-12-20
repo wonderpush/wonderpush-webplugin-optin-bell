@@ -165,6 +165,8 @@ $notification-icon-size: 53px;
   .wonderpush-dialog {
     @include collapsible(bottom left);
     position: absolute;
+    width: max-content;
+    min-width: 240px;
     left: 0;
     bottom: $default-height + 15;
     border: 1px solid #ccc;

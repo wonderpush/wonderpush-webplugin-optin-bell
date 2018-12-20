@@ -179,11 +179,15 @@
           if (!elt) return;
           if (elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
           elt.classList.add(cssPrefix + 'collapsed');
-          var result = makeTransitionPromise(elt);
+          var result = this.element.parentNode ? makeTransitionPromise(elt) : Promise.resolve();
           if (elt === this.dialog) {
             result.then(function () {
               this.collapse(this.dialogAdvancedSettings);
             }.bind(this));
+          } else if (elt === this.paragraph) {
+            result.then(function() {
+              this.paragraph.classList.add(cssPrefix + 'hidden');
+            }.bind(this))
           }
           return result;
         }.bind(this);
@@ -199,6 +203,7 @@
           if (!elt) return;
           if (!elt.classList.contains(cssPrefix + 'collapsed')) return Promise.resolve();
           elt.classList.remove(cssPrefix + 'collapsed');
+          elt.classList.remove(cssPrefix + 'hidden');
           return makeTransitionPromise(elt);
         }.bind(this);
 
