@@ -297,6 +297,15 @@
       }.bind(this);
 
       /**
+       * Detaches the bell element from the document body
+       */
+      this.hideBell = function() {
+        if (bell.element && bell.element.parentNode) {
+          bell.element.parentNode.removeChild(bell.element);
+        }
+      };
+
+      /**
        * Adapts the UI to a subscription state change
        * @param {WonderPushSDK.prototype.SubscriptionState} state
        * @param {object|undefined} event. If present, the event that reported the state change
