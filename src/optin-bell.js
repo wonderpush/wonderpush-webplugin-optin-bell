@@ -27,6 +27,9 @@
    * @property {String} [unsubscribedText] - Text displayed when users unsubscribe. Defaults to "You won't receive more notifications".
    * @property {String} [advancedSettingsDescription] - Text displayed above advanced settings. Defaults to "Your personal notification data:".
    * @property {String} [advancedSettingsFineprint] - Text displayed below advanced settings. Defaults to "WonderPush fully supports european GDPR".
+   * @property {String} [downloadDataButtonTitle] - Title of the download button. Defaults to "Download".
+   * @property {String} [clearDataButtonTitle] - Title of the clear button. Defaults to "Clear".
+   * @property {Boolean} [hidePrivacySettings] - By default, subscribed users see a Settings button giving them access to privacy settings. When hidePrivacySettings is specified, the settings button is hidden. Defaults to false.
    * @property {Boolean} [showBadge] - When true, a badge with an unread count of "1" will be displayed the first time users see the bell. Defaults to true.
    */
   /**
@@ -157,6 +160,9 @@
           elt.classList.add(cssPrefix + definition.cls);
         }.bind(this));
 
+        if (options.hidePrivacySettings) {
+          this.dialogSettingsButton.style.display = 'none';
+        }
         /**
          * Is the given elt/prop collapsed ?
          * @param {HTMLElement|string} Element of name of a property resolving to an element
@@ -187,7 +193,7 @@
           } else if (elt === this.paragraph) {
             result.then(function() {
               this.paragraph.classList.add(cssPrefix + 'hidden');
-            }.bind(this))
+            }.bind(this));
           }
           return result;
         }.bind(this);
@@ -257,8 +263,8 @@
         } else {
           this.dialogAdvancedSettingsFineprint.innerHTML = _('WonderPush fully supports european GDPR').replace('WonderPush', '<a href="https://www.wonderpush.com/">WonderPush</a>');
         }
-        this.dialogAdvancedSettingsClearButton.textContent = _('Clear');
-        this.dialogAdvancedSettingsDownloadButton.textContent = _('Download');
+        this.dialogAdvancedSettingsClearButton.textContent = options.clearDataButtonTitle || _('Clear');
+        this.dialogAdvancedSettingsDownloadButton.textContent = options.downloadDataButtonTitle || _('Download');
         this.dialogSettingsButton.addEventListener('click', function () {
           this.toggleCollapse(this.dialogAdvancedSettings);
         }.bind(this));
@@ -276,6 +282,9 @@
       var bell = new Bell({
         notificationIcon: options.notificationIcon || WonderPushSDK.getNotificationIcon(),
         dialogTitle: options.dialogTitle,
+        hidePrivacySettings: options.hidePrivacySettings,
+        clearDataButtonTitle: options.clearDataButtonTitle,
+        downloadDataButtonTitle: options.downloadDataButtonTitle,
         advancedSettingsDescription: options.advancedSettingsDescription,
         advancedSettingsFineprint: options.advancedSettingsFineprint,
       });
@@ -471,7 +480,7 @@
             break;
           case WonderPushSDK.SubscriptionState.SUBSCRIBED:
           case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
-            bell.dialogSettingsButton.style.display = state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
+            bell.dialogSettingsButton.style.display = options.hidePrivacySettings ? 'none' : state === WonderPushSDK.SubscriptionState.SUBSCRIBED ? '' : 'none';
             bell.uncollapse(bell.dialog);
             bell.collapse(bell.paragraph);
             bell.element.classList.remove(cssPrefix + 'discrete');
