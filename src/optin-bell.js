@@ -255,7 +255,7 @@
         };
 
         // Configure a few things
-        if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon + ')';
+        if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon.replace('(', '%28').replace(')', '%29') + ')';
         this.dialogTitle.textContent = options.dialogTitle || _('Manage Notifications');
         this.dialogAdvancedSettingsDescription.textContent = options.advancedSettingsDescription || _('Your personal notification data:');
         if (options.advancedSettingsFineprint) {
