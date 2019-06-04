@@ -59,15 +59,6 @@ let processCSS = lazypipe()
     .pipe(cssBase64)
     .pipe(cleanCSS);
 
-gulp.task('default', ['clean', 'build', 'doc'], function() {
-});
-
-gulp.task('build', ['dist-js', 'dist-css', 'dist-less', 'dist-sass', 'copy-res'], function() {
-});
-
-gulp.task('watch', ['watch-js', 'watch-css', 'watch-less', 'watch-sass'], function() {
-});
-
 gulp.task('doc', function(cb) {
     gulp.src(['index.md'].concat(JS_GLOB), {read: false})
         .pipe(jsdoc({
@@ -102,44 +93,6 @@ gulp.task('clean', function() {
 
 gulp.task('copy-res', function() {
     return gulp.src(RES_GLOB)
-        .pipe(gulp.dest(DIST_DIR));
-});
-
-gulp.task('dist-js', ['minify-css', 'minify-less', 'minify-sass', 'copy-res'], function() {
-    return gulp.src(JS_GLOB)
-        .pipe(plumber())
-        .pipe(jshint())
-        .pipe(jshint.reporter())
-        .pipe(jshint.reporter('fail'))
-        .pipe(sourcemaps.init())
-        .pipe(babel({
-            plugins: [
-                function({types: t}) {
-                    return {
-                        visitor: {
-                            CallExpression(path) {
-                                if (t.isMemberExpression(path.node.callee)
-                                        && t.isIdentifier(path.node.callee.object, {name: 'WonderPushSDK'})
-                                        && t.isIdentifier(path.node.callee.property, {name: 'loadStylesheet'})
-                                        && path.node.arguments.every(arg => t.isStringLiteral(arg))) {
-                                    const inputContents = path.node.arguments.map(arg => fs.readFileSync(`${BUILD_DIR}/${arg.value}`));
-                                    const replacementSource = `(function() {
-                                      var tag = document.createElement('style');
-                                      tag.type = 'text/css';
-                                      tag.appendChild(document.createTextNode(${JSON.stringify(inputContents.join(''))}));
-                                      document.head.appendChild(tag);
-                                    })()`;
-                                    path.replaceWithSourceString(replacementSource);
-                                }
-                            },
-                        },
-                    };
-                },
-            ],
-        }))
-        .pipe(uglify())
-        .pipe(addHeader())
-        .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(DIST_DIR));
 });
 
@@ -229,7 +182,7 @@ gulp.task('doc-prepare-publish-repo', function() {
         }).catch(noop); // (ignore error, gh-pages may not already exist)
 });
 
-gulp.task('doc-prepare-publish', ['clean', 'doc', 'doc-prepare-publish-repo'], function() {
+gulp.task('doc-prepare-publish', gulp.series('clean', 'doc', 'doc-prepare-publish-repo', function() {
     return new Promise(function(resolve, reject) {
         var cb = function(err) {
             if (err) reject(err);
@@ -262,8 +215,52 @@ gulp.task('doc-prepare-publish', ['clean', 'doc', 'doc-prepare-publish-repo'], f
                     .on('end', cb);
             });
     });
-});
+}));
 
-gulp.task('doc-publish', ['doc-prepare-publish'], function(cb) {
+gulp.task('dist-js', gulp.series('minify-css', 'minify-less', 'minify-sass', 'copy-res', function() {
+    return gulp.src(JS_GLOB)
+        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter())
+        .pipe(jshint.reporter('fail'))
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            plugins: [
+                function({types: t}) {
+                    return {
+                        visitor: {
+                            CallExpression(path) {
+                                if (t.isMemberExpression(path.node.callee)
+                                        && t.isIdentifier(path.node.callee.object, {name: 'WonderPushSDK'})
+                                        && t.isIdentifier(path.node.callee.property, {name: 'loadStylesheet'})
+                                        && path.node.arguments.every(arg => t.isStringLiteral(arg))) {
+                                    const inputContents = path.node.arguments.map(arg => fs.readFileSync(`${BUILD_DIR}/${arg.value}`));
+                                    const replacementSource = `(function() {
+                                      var tag = document.createElement('style');
+                                      tag.type = 'text/css';
+                                      tag.appendChild(document.createTextNode(${JSON.stringify(inputContents.join(''))}));
+                                      document.head.appendChild(tag);
+                                    })()`;
+                                    path.replaceWithSourceString(replacementSource);
+                                }
+                            },
+                        },
+                    };
+                },
+            ],
+        }))
+        .pipe(uglify())
+        .pipe(addHeader())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(DIST_DIR));
+}));
+
+gulp.task('doc-publish', gulp.series('doc-prepare-publish', function(cb) {
     git.push('origin', 'gh-pages', {cwd: DOC_PUBLISH_DIR}, cb);
-});
+}));
+
+gulp.task('build', gulp.series('dist-js', 'dist-css', 'dist-less', 'dist-sass', 'copy-res'));
+
+gulp.task('watch', gulp.series('watch-js', 'watch-css', 'watch-less', 'watch-sass'));
+
+gulp.task('default', gulp.series('clean', 'build', 'doc'));
