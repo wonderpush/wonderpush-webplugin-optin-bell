@@ -98,8 +98,16 @@ $notification-icon-size: 53px;
     .wonderpush-icon {
       mask-image: url(./bell.svg);
       -webkit-mask-image: url(./bell.svg);
+
       mask-size: contain;
       -webkit-mask-size: contain;
+
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+
+      mask-position: center center;
+      -webkit-mask-position: center center;
+
       background: $default-bell-color;
       width: 60%;
       height: 60%;
