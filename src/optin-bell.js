@@ -65,13 +65,15 @@
       };
       var cssPrefix = 'wonderpush-';
 
+      var locales = WonderPushSDK.getLocales ? WonderPushSDK.getLocales() || [] : [];
+      var language = locales.map(function(x) { return x.split(/[-_]/)[0]; })[0] || (navigator.language || '').split('-')[0];
+
       /**
        * Translates the given text
        * @param text
        * @returns {*}
        */
       var _ = function (text) {
-        var language = (navigator.language || '').split('-')[0];
         if (translations.hasOwnProperty(language) && translations[language][text]) return translations[language][text];
         return text;
       };
