@@ -61,7 +61,71 @@
           "Click to subscribe to notifications": "Cliquez pour vous abonner aux notifications",
           "You won't receive more notifications": "Vous ne recevrez plus de notifications",
           "Thanks for subscribing!": "Merci de vous être abonné !"
-        }
+        },
+        "es": {
+          "Manage Notifications": "Administrar notificaciones",
+          "Your personal notification data:": "Sus datos personales de notificación :",
+          "WonderPush fully supports european GDPR": "WonderPush es totalmente compatible con GDPR europeo",
+          "Clear": "Borrar",
+          "Download": "Descargar",
+          "You've blocked notifications": "Has bloqueado las notificaciones",
+          "Unsubscribe": "Darse de baja de las notificaciones",
+          "You're subscribed to notifications": "Estás suscrito a notificaciones",
+          "Subscribe": "Suscribirse",
+          "You are not receiving any notifications": "No está recibiendo ninguna notificación",
+          "Loading": "Cargando",
+          "Click to subscribe to notifications": "Haga clic para suscribirse a las notificaciones",
+          "You won't receive more notifications": "No recibirá más notificaciones",
+          "Thanks for subscribing!": "¡Gracias por suscribirse!"
+        },
+        "it": {
+          "Manage Notifications": "Gestisci notifiche",
+          "Your personal notification data:": "I tuoi dati di notifica personali:",
+          "WonderPush fully supports european GDPR": "WonderPush supporta pienamente il GDPR europeo",
+          "Clear": "Eliminare",
+          "Download": "Scaricare",
+          "You've blocked notifications": "Notifiche bloccate",
+          "Unsubscribe": "Annulla iscrizione",
+          "You're subscribed to notifications": "Sei iscritto alle notifiche",
+          "Subscribe": "Mi iscrivo",
+          "You are not receiving any notifications": "Non ricevi alcuna notifica",
+          "Loading": "Carica",
+          "Click to subscribe to notifications": "Fai clic per iscriverti alle notifiche",
+          "You won't receive more notifications": "Non riceverai più notifiche",
+          "Thanks for subscribing!": "Grazie per esserti iscritto!"
+        },
+        "de": {
+          "Manage Notifications": "Benachrichtigungen verwalten",
+          "Your personal notification data:": "Ihre persönlichen Benachrichtigungsdaten:",
+          "WonderPush fully supports european GDPR": "WonderPush unterstützt die europäische GDPR",
+          "Clear": "Klar",
+          "Download": "Herunterladen",
+          "You've blocked notifications": "Sie haben Benachrichtigungen blockiert",
+          "Unsubscribe": "Abbestellen",
+          "You're subscribed to notifications": "Sie haben Benachrichtigungen abonniert",
+          "Subscribe": "Abonnieren",
+          "You are not receiving any notifications": "Sie erhalten keine Benachrichtigungen",
+          "Loading": "Wird geladen",
+          "Click to subscribe to notifications": "Klicken Sie hier, um Benachrichtigungen zu abonnieren",
+          "You won't receive more notifications": "Sie erhalten keine Benachrichtigungen mehr",
+          "Thanks for subscribing!": "Danke fürs Abonnieren!"
+        },
+        "pt": {
+          "Manage Notifications": "Gerenciar notificações",
+          "Your personal notification data:": "Os seus dados de notificação pessoal:",
+          "WonderPush fully supports european GDPR": "O WonderPush suporta totalmente o GDPR europeu",
+          "Clear": "Clear",
+          "Download": "Download",
+          "You've blocked notifications": "Você bloqueou as notificações",
+          "Unsubscribe": "Cancelar inscrição",
+          "You're subscribed to notifications": "Você está inscrito nas notificações",
+          "Subscribe": "Inscrever-se",
+          "You are not receiving any notifications": "Você não está recebendo nenhuma notificação",
+          "Loading": "Loading",
+          "Click to subscribe to notifications": "Clique para assinar as notificações",
+          "You won't receive more notifications": "Você não receberá mais notificações",
+          "Thanks for subscribing!": "Obrigado por se inscrever!"
+        },
       };
       var cssPrefix = 'wonderpush-';
 
