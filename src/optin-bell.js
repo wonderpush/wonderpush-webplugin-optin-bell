@@ -126,6 +126,38 @@
           "You won't receive more notifications": "Você não receberá mais notificações",
           "Thanks for subscribing!": "Obrigado por se inscrever!"
         },
+        "nl": {
+          "Manage Notifications": "Beheer pushmeldingen",
+          "Your personal notification data:": "Uw persoonlijke meldingsgegevens:",
+          "WonderPush fully supports european GDPR": "WonderPush ondersteunt de Europese GDPR volledig",
+          "Clear": "Clear",
+          "Download": "Downloaden",
+          "You've blocked notifications": "Je hebt pushmeldingen geblokkeerd",
+          "Unsubscribe": "Abonnement opzeggen",
+          "You're subscribed to notifications": "U bent aangemeld voor kennisgevingen",
+          "Subscribe": "Abonneren",
+          "You are not receiving any notifications": "Je ontvangt geen meldingen meer",
+          "Loading": "Bezig met laden",
+          "Click to subscribe to notifications": "Klik om u te abonneren op meldingen",
+          "You won't receive more notifications": "Je ontvangt geen meldingen meer",
+          "Thanks for subscribing!": "Bedankt voor het inschrijven!",
+        },
+        "pl": {
+          "Manage Notifications": "Zarządzaj powiadomieniami push",
+          "Your personal notification data:": "Twoje osobiste dane powiadomień:",
+          "WonderPush fully supports european GDPR": "WonderPush w pełni wspiera europejski RODO",
+          "Clear": "Wyczyść dane",
+          "Download": "Pobierz",
+          "You've blocked notifications": "Zablokowałeś powiadomienia",
+          "Unsubscribe": "Anuluj subskrypcje",
+          "You're subscribed to notifications": "Subskrybujesz powiadomienia",
+          "Subscribe": "Subskrybuj",
+          "You are not receiving any notifications": "Nie otrzymujesz żadnych powiadomień",
+          "Loading": "Ładowanie",
+          "Click to subscribe to notifications": "Kliknij, aby zasubskrybować powiadomienia",
+          "You won't receive more notifications": "Nie będziesz otrzymywać więcej powiadomień",
+          "Thanks for subscribing!": "Dzięki za subskrypcję!",
+        },
       };
       var cssPrefix = 'wonderpush-';
 
