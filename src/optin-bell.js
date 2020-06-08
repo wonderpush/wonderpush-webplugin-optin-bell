@@ -45,6 +45,10 @@
    */
   WonderPush.registerPlugin("optin-bell", {
     window: function OptinBell(WonderPushSDK, options) {
+      // Do not show anything on unsupported browsers.
+      if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.UNSUPPORTED) {
+        return;
+      }
       var translations = {
         "fr": {
           "Manage Notifications": "Gestion des notifications",
