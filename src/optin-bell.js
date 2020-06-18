@@ -46,8 +46,13 @@
   WonderPush.registerPlugin("optin-bell", {
     window: function OptinBell(WonderPushSDK, options) {
       // Do not show anything on unsupported browsers.
-      if (WonderPushSDK.Notification.getSubscriptionState() === WonderPushSDK.SubscriptionState.UNSUPPORTED) {
-        return;
+      if (!WonderPushSDK.isNativePushNotificationSupported()) {
+        return {
+          showBell: function() {},
+          hideBell: function() {},
+          updateTexts: function() {},
+          updateDiscretion: function() {},
+        };
       }
       var translations = {
         "fr": {
