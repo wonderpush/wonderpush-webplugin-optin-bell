@@ -8,7 +8,6 @@
    */
   /**
    * @typedef {Object} OptinBell.Options
-   * @property {String} [language] - The language code. We currently support 'en' and 'fr'. Defaults to the browser language.
    * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
    * @property {String} [cssPrefix] - A prefix to be used in front of all CSS classes. Use this to reset our styles and put your own. Defaults to 'wonderpush-'.
