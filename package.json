@@ -1,6 +1,6 @@
 {
   "name": "wonderpush-webplugin-optin-bell",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "WonderPush Web SDK plugin to present the user an opt-in bell before prompting her for push permission.",
   "main": "src/optin-bell.js",
   "scripts": {
