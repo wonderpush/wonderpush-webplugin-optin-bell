@@ -405,7 +405,7 @@
           window.document.body.appendChild(bell.element);
         };
         if (readyState === 'loading') {
-          window.document.addEventListener('domcontentloaded', attach);
+          window.document.addEventListener('DOMContentLoaded', attach);
         } else {
           attach();
         }
