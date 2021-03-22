@@ -97,7 +97,7 @@ gulp.task('copy-res', function() {
 });
 
 gulp.task('watch-js', function() {
-    return gulp.watch(JS_GLOB, ['dist-js']);
+    return gulp.watch(JS_GLOB, gulp.series('dist-js'));
 });
 
 gulp.task('minify-css', function() {

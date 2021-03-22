@@ -3,6 +3,9 @@
   "version": "1.0.11",
   "description": "WonderPush Web SDK plugin to present the user an opt-in bell before prompting her for push permission.",
   "main": "src/optin-bell.js",
+  "scripts": {
+    "watch": "gulp watch"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/wonderpush/wonderpush-webplugin-optin-bell.git"
