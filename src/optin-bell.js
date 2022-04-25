@@ -167,6 +167,13 @@
           "Thanks for subscribing!": "Dzięki za subskrypcję!",
         },
       };
+      var catchRegistrationErrors = function(error) {
+        if (error instanceof WonderPush.Errors.UserCancellationError || error instanceof WonderPush.Errors.PermissionError) {
+          console.warn(error);
+          return;
+        }
+        console.error(error);
+      };
       var cssPrefix = 'wonderpush-';
 
       var locales = WonderPushSDK.getLocales ? WonderPushSDK.getLocales() || [] : [];
@@ -522,11 +529,11 @@
               .then(function () {
                 bell.collapse(bell.dialog);
                 bell.uncollapse(bell.paragraph);
-              });
+              }, catchRegistrationErrors);
             break;
           case WonderPushSDK.SubscriptionState.UNSUBSCRIBED:
             // Subscribe
-            WonderPushSDK.setNotificationEnabled(true, event);
+            WonderPushSDK.setNotificationEnabled(true, event).catch(catchRegistrationErrors);
             bell.collapse(bell.dialog);
             break;
         }
@@ -593,7 +600,7 @@
             break;
           case WonderPushSDK.SubscriptionState.NOT_SUBSCRIBED:
             // Subscribe
-            WonderPushSDK.setNotificationEnabled(true, event);
+            WonderPushSDK.setNotificationEnabled(true, event).catch(catchRegistrationErrors);
             bell.collapse(bell.dialog);
             break;
         }
