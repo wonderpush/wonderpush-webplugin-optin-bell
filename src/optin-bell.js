@@ -439,7 +439,7 @@
             bell.dialogButton.textContent = '';
             bell.paragraph.textContent = options.blockedText || _('You\'ve blocked notifications');
             // We don't want to load this earlier
-            bell.help.style.backgroundImage = 'url(https://cdn.by.wonderpush.com/plugins/optin-bell/1.0.0/allow-notifications.jpg)';
+            bell.help.style.setProperty('--uncollapsed-background-image', 'url(https://cdn.by.wonderpush.com/plugins/optin-bell/1.0.0/allow-notifications.jpg');
             break;
           case WonderPushSDK.SubscriptionState.SUBSCRIBED:
             bell.dialogButton.textContent = options.unsubscribeButtonTitle || _('Unsubscribe');

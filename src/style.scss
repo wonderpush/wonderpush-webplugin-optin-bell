@@ -169,6 +169,9 @@ $notification-icon-size: 53px;
     border-radius: 4px;
     box-shadow: 0 0 15px rgba(0,0,0,0.4);
     @include bottom-arrow();
+    &:not(.wonderpush-collapsed)[style*="--uncollapsed-background-image"] {
+      background-image: var(--uncollapsed-background-image);
+    }
   }
 
   .wonderpush-dialog {
