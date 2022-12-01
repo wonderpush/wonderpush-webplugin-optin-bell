@@ -112,6 +112,7 @@ $notification-icon-size: 53px;
       background: $default-bell-color;
       width: 60%;
       height: 60%;
+      display: block; // for Shopify...
     }
 
     .wonderpush-icon-badge {
