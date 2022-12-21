@@ -37,6 +37,7 @@ $notification-icon-size: 53px;
   display: none !important;
 }
 .wonderpush-bell {
+  div:empty {display: revert;} // Fix for shopify
   z-index: 10000;
   direction: ltr;
   color: #333;
