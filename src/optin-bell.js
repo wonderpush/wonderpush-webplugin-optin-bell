@@ -365,7 +365,7 @@
             this.element.classList.remove(cssPrefix + 'deactivated');
           }.bind(this), 0);
           return makeTransitionPromise(this.element);
-        };
+        }.bind(this);
 
         // Configure a few things
         if (options.notificationIcon) this.notificationIcon.style.backgroundImage = 'url(' + options.notificationIcon.replace('(', '%28').replace(')', '%29') + ')';
@@ -629,6 +629,10 @@
       }
       if (options.bellIcon) {
         bell.icon.style.maskImage = bell.icon.style.webkitMaskImage = 'url(' + options.bellIcon + ')';
+      } else if (WonderPushSDK.getAssets) {
+        var assets = WonderPushSDK.getAssets();
+        bell.icon.style.maskImage = "url("+assets.bell+")";
+        bell.icon.style.setProperty('-webkit-mask-image', bell.icon.style.maskImage);
       }
       // Attach
       this.showBell();

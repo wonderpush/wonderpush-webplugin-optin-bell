@@ -98,9 +98,6 @@ $notification-icon-size: 53px;
     position: relative;
 
     .wonderpush-icon {
-      mask-image: url(./bell.svg);
-      -webkit-mask-image: url(./bell.svg);
-
       mask-size: contain;
       -webkit-mask-size: contain;
 
