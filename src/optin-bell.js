@@ -10,6 +10,7 @@
    * @typedef {Object} OptinBell.Options
    * @property {Boolean} [hideWhenSubscribed] - When true, the bell will be hidden to subscribed users. Defaults to false.
    * @property {Object} [style] - Styles to be added to the bell container.
+   * @property {WonderPushPluginSDK.URLFilters|undefined} [urlFilters] - URL filters to apply before showing the bell.
    * @property {String} [cssPrefix] - A prefix to be used in front of all CSS classes. Use this to reset our styles and put your own. Defaults to 'wonderpush-'.
    * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
    * @property {String} [position] - Acceptable values are "left" or "right". Defaults to "left".
@@ -407,6 +408,15 @@
        * @type {any}
        */
       this.showBell = function () {
+
+        // Detach first
+        this.hideBell();
+
+        // Check that we are at the right place
+        if (options.urlFilters && WonderPushSDK.currentURLPassesFilters && !WonderPushSDK.currentURLPassesFilters(options.urlFilters)) {
+          WonderPushSDK.logDebug('Current URL does not match url filters', options.urlFilters);
+          return;
+        }
         var readyState = window.document.readyState;
         var attach = function () {
           window.document.body.appendChild(bell.element);
@@ -636,6 +646,16 @@
       }
       // Attach
       this.showBell();
+
+      // Listen to a new URL
+      var url = window.location.href;
+      setInterval(function() {
+        if (window.location.href === url) return;
+        url = window.location.href;
+        WonderPushSDK.logDebug('Change of URL detected, show bell');
+        this.showBell();
+      }.bind(this), 1000);
+
       // Texts
       this.updateTexts();
       // Discrete
