@@ -13,6 +13,8 @@
    * @property {WonderPushPluginSDK.URLFilters|undefined} [urlFilters] - URL filters to apply before showing the bell.
    * @property {String} [cssPrefix] - A prefix to be used in front of all CSS classes. Use this to reset our styles and put your own. Defaults to 'wonderpush-'.
    * @property {String} [color] - Main color of the widget. Defaults to #ff6f61
+   * @property {number} [distanceFromTheEdge] - Defaults to 20px.
+   * @property {number} [distanceFromTheBottom] - Defaults to 20px.
    * @property {String} [position] - Acceptable values are "left" or "right". Defaults to "left".
    * @property {String} [bellIcon] - URL of the bell icon.
    * @property {String} [dialogTitle] - Title of the settings dialog. Defaults to "Manage Notifications".
@@ -628,7 +630,15 @@
 
       // Options
       if (options.style) for (var prop in options.style) bell.element.style[prop] = options.style[prop];
-      if (options.position === 'right') bell.element.classList.add(cssPrefix + 'right');
+      if (options.position === 'right') {
+        bell.element.classList.add(cssPrefix + 'right');
+        if (options.distanceFromTheEdge) bell.element.style.right = '' + options.distanceFromTheEdge + 'px';
+      } else if (options.distanceFromTheEdge) {
+        bell.element.style.left = '' + options.distanceFromTheEdge + 'px';
+      }
+      if (options.distanceFromTheBottom) {
+        bell.element.style.bottom = '' + options.distanceFromTheBottom + 'px';
+      }
       if (options.color) {
         bell.iconContainer.style.backgroundColor = options.color;
         bell.dialogButton.style.backgroundColor = options.color;
