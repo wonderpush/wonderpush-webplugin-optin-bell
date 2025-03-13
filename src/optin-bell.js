@@ -56,6 +56,15 @@
           updateDiscretion: function() {},
         };
       }
+      // Do not show if resubscribe is false
+      if (WonderPushSDK.getResubscribe && !WonderPushSDK.getResubscribe()) {
+        return {
+          showBell: function() {},
+          hideBell: function() {},
+          updateTexts: function() {},
+          updateDiscretion: function() {},
+        };
+      }
       var translations = {
         "fr": {
           "Manage Notifications": "Gestion des notifications",
